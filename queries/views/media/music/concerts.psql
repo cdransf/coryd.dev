@@ -1,0 +1,19 @@
+CREATE OR REPLACE VIEW optimized_concerts AS
+SELECT
+    c.id,
+    c.date,
+    c.notes,
+    CASE WHEN c.artist IS NOT NULL THEN
+        json_build_object('name', a.name_string, 'url', a.slug)
+    ELSE
+        json_build_object('name', c.artist_name_string, 'url', NULL)
+    END AS artist,
+    json_build_object('name', v.name, 'name_short', trim(split_part(v.name, ',', 1)), 'latitude', v.latitude, 'longitude', v.longitude, 'notes', v.notes) AS venue,
+    c.notes AS concert_notes
+FROM
+    concerts c
+    LEFT JOIN artists a ON c.artist = a.id
+    LEFT JOIN venues v ON c.venue = v.id
+ORDER BY
+    c.date DESC;
+

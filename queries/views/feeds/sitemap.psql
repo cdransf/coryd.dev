@@ -1,0 +1,41 @@
+CREATE OR REPLACE VIEW optimized_sitemap AS
+WITH sitemap_data AS (
+    SELECT
+        CONCAT('https://coryd.dev', p.url) AS url
+    FROM
+        optimized_posts p
+    UNION ALL
+    SELECT
+        CONCAT('https://coryd.dev', b.url) AS url
+    FROM
+        optimized_books b
+    UNION ALL
+    SELECT
+        CONCAT('https://coryd.dev', m.url) AS url
+    FROM
+        optimized_movies m
+    UNION ALL
+    SELECT
+        CONCAT('https://coryd.dev', ar.url) AS url
+    FROM
+        optimized_artists ar
+    UNION ALL
+    SELECT
+        CONCAT('https://coryd.dev', g.url) AS url
+    FROM
+        optimized_genres g
+    UNION ALL
+    SELECT
+        CONCAT('https://coryd.dev', s.url) AS url
+    FROM
+        optimized_shows s
+    UNION ALL
+    SELECT
+        CONCAT('https://coryd.dev', pa.permalink) AS url
+    FROM
+        optimized_pages pa
+)
+SELECT
+    url
+FROM
+    sitemap_data;

@@ -1,0 +1,34 @@
+<script type="module" src="/assets/scripts/components/select-pagination.js?v={% appVersion %}"></script>
+<nav aria-label="Pagination" class="pagination">
+  {% assign prevHref = pagination.href.previous %}
+  {% assign nextHref = pagination.href.next %}
+  <a
+    href="{{ prevHref }}"
+    aria-label="Previous page"
+    class="{% unless prevHref %}disabled{% endunless %}"
+  >
+    {% tablericon "arrow-left" %}
+  </a>
+  <select-pagination>
+    <select class="client-side" aria-label="Page selection">
+      {%- for pageEntry in pagination.pages -%}
+        <option value="{{ forloop.index | minus: 1 }}">
+          {{ forloop.index }} of {{ pagination.links.size }}
+        </option>
+      {%- endfor -%}
+    </select>
+    <noscript>
+      <p>
+        <span aria-current="page">{{ pagination.pageNumber | plus: 1 }}</span>
+        of {{ pagination.links.size }}
+      </p>
+    </noscript>
+  </select-pagination>
+  <a
+    href="{{ nextHref }}"
+    aria-label="Next page"
+    class="{% unless nextHref %}disabled{% endunless %}"
+  >
+    {% tablericon "arrow-right" %}
+  </a>
+</nav>

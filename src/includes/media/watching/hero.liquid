@@ -1,0 +1,14 @@
+<a href="{{ movie.url }}">
+  <div class="watching media-overlay hero">
+    <div class="meta-text">
+      <div class="header">{{ movie.title }}</div>
+      <div class="subheader">
+        {%- if movie.rating -%}
+          <span class="rating">{{ movie.rating }} </span>
+        {%- endif -%}
+        ({{ movie.year }})
+      </div>
+    </div>
+    {% render "blocks/hero.liquid", globals:globals, image:movie.backdrop, alt:movie.title %}
+  </div>
+</a>

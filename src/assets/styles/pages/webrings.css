@@ -1,0 +1,20 @@
+.webring-wrapper,
+.webring-navigation {
+  display: flex;
+  align-items: center;
+}
+
+.webring-wrapper {
+  flex-direction: column;
+  text-align: center;
+  margin: var(--margin-vertical-base-horizontal-zero);
+
+  & p {
+    margin: 0;
+  }
+
+  & .webring-navigation {
+    justify-content: center;
+    gap: var(--spacing-sm);
+  }
+}

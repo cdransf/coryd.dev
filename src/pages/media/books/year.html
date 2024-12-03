@@ -1,0 +1,23 @@
+---
+pagination:
+  data: books.years
+  size: 1
+  alias: year
+permalink: "/books/years/{{ year.value }}.html"
+schema: books-year
+---
+{%- assign bookData = year.data | filterBooksByStatus: 'finished' -%}
+{%- assign bookDataFavorites = bookData | findFavoriteBooks -%}
+{%- capture favoriteBooks -%}{{ bookDataFavorites | shuffleArray | mediaLinks: "book", 5 }}{%- endcapture -%}
+{%- assign currentYear = 'now' | date: "%Y" -%}
+{%- assign yearString = year.value | append: '' -%}
+{%- assign currentYearString = currentYear | append: '' -%}
+<a href="/books" class="back-link">{% tablericon "arrow-left" %} Back to books</a>
+<h2 class="page-title">{{ year.value }} / Books</h2>
+{% if yearString == currentYearString %}
+<p>I've finished <strong class="highlight-text">{{ bookData.size }} books</strong> this year.{%- if favoriteBooks %} Among my favorites are {{ favoriteBooks }}.{%- endif -%}</p>
+{% else %}
+<p>I finished <strong class="highlight-text">{{ bookData.size }} books</strong> in <strong class="highlight-text">{{ year.value }}</strong>.{%- if favoriteBooks %}  Among my favorites were {{ favoriteBooks }}.{%- endif -%}</p>
+{% endif %}
+<hr />
+{% render "media/grid.liquid", globals:globals, data:bookData, shape:"vertical", count: 200, loading: "eager" %}

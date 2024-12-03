@@ -1,0 +1,12 @@
+<menu>
+  <input id="menu-toggle" type="checkbox" aria-hidden="true" />
+  <label class="menu-button-container" for="menu-toggle" tabindex="0">
+    <div class="menu-closed" aria-hidden="true">{% tablericon "menu-2" %}</div>
+    <div class="menu-open" aria-hidden="true">{% tablericon "circle-x" %}</div>
+  </label>
+  <ul class="menu-primary" aria-label="Primary site navigation" id="primary-navigation">
+    {%- for link in nav.primary -%}
+      <li>{% render "nav/link.liquid", page:page, link:link %}</li>
+    {%- endfor -%}
+  </ul>
+</menu>

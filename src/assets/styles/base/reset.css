@@ -1,0 +1,131 @@
+*,
+*::before,
+*::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:where([hidden]:not([hidden='until-found'])) {
+	display: none !important;
+}
+
+:where(html) {
+  font-size: 100%;
+	-webkit-text-size-adjust: none;
+  scrollbar-width: thin;
+	scrollbar-gutter: stable;
+	tab-size: 2;
+}
+
+:where(html:has(dialog:modal[open])) {
+	overflow: clip;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	:where(html:focus-within) {
+		scroll-behavior: smooth;
+	}
+}
+
+:where(body) {
+	font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+	-webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+:where(button) {
+	all: unset;
+}
+
+:where(input, button, textarea, select) {
+	font: inherit;
+	color: inherit;
+}
+
+:where(textarea) {
+	resize: vertical;
+	resize: block;
+}
+
+:where(button, label, select, summary, [role='button'], [role='option']) {
+	cursor: pointer;
+}
+
+:where(:disabled) {
+	cursor: not-allowed;
+}
+
+:where(label:has(> input:disabled), label:has(+ input:disabled)) {
+	cursor: not-allowed;
+}
+
+:where(a) {
+	color: inherit;
+	text-underline-offset: var(--spacing-xs);
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+	list-style-type: number;
+}
+
+:where(ul, ol) {
+	list-style-position: inside;
+}
+
+:where(img, svg, video, canvas, audio, iframe, embed, object) {
+	display: block;
+}
+
+:where(p, h1, h2, h3) {
+	overflow-wrap: break-word;
+}
+
+:where(hr) {
+	border: none;
+	border-block-start: 1px solid;
+	border-block-start-color: currentColor;
+	color: inherit;
+	block-size: 0;
+	overflow: visible;
+}
+
+:where(dialog, [popover]) {
+	border: none;
+	background: none;
+	color: inherit;
+	inset: unset;
+	max-width: unset;
+	max-height: unset;
+}
+
+:where(dialog:not([open], [popover]), [popover]:not(:popover-open)) {
+	display: none !important;
+}
+
+:where(:focus-visible) {
+	outline: var(--border-default);
+	outline-offset: 1px;
+  border-radius: var(--border-radius-slight);
+	box-shadow: 0 0 0 1px var(--accent-color);
+}
+
+:where(:focus-visible, :target) {
+	scroll-margin-block: 8vh;
+}
+
+:where(.visually-hidden:not(:focus-within, :active)) {
+	clip-path: inset(50%) !important;
+	height: 1px !important;
+	width: 1px !important;
+	overflow: hidden !important;
+	position: absolute !important;
+	white-space: nowrap !important;
+	border: 0 !important;
+	user-select: none !important;
+}

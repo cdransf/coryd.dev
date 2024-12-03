@@ -1,0 +1,16 @@
+---
+pagination:
+  data: pages
+  size: 1
+  alias: page
+permalink: "{{ page.permalink }}.html"
+image: "{{ page.open_graph_image | prepend: globals.cdn_url | default: globals.avatar }}"
+updated: "{{ page.updated | default: null }}"
+schema: page
+---
+{% render "blocks/index.liquid",
+  blocks:page.blocks,
+  globals:globals,
+  collections:collections,
+  links:links
+%}

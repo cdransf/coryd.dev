@@ -1,0 +1,147 @@
+---
+pagination:
+  data: artists
+  size: 1
+  alias: artist
+permalink: "{{ artist.url }}/index.html"
+updated: "now"
+schema: artist
+---
+
+{%- capture alt -%}
+  {{ artist.name }} / {{ artist.country }}
+{%- endcapture -%}
+{%- capture playLabel -%}
+  {%- if artist.total_plays == 1 -%}
+    play
+  {%- else -%}
+    plays
+  {%- endif -%}
+{%- endcapture -%} {%- capture emoji -%}
+{% if artist.emoji %}
+  {{ artist.emoji }}
+{% else %}
+  {{ artist.genre_emoji }}
+{% endif %} {%
+endcapture -%}
+<noscript
+  ><style>
+    [data-toggle-content].text-toggle-hidden {
+      height: unset !important;
+      overflow: unset !important;
+      margin-bottom: unset !important;
+    }
+    [data-toggle-content].text-toggle-hidden::after {
+      display: none !important;
+    }
+  </style></noscript
+>
+<a class="back-link" href="/music" title="Go back to the music index page"
+  >{% tablericon "arrow-left" %} Back to music</a
+>
+<article class="artist-focus">
+  <div class="artist-display">
+    <img
+      srcset="
+        {{ globals.cdn_url }}{{ artist.image }}?class=w200&type=webp 200w,
+        {{ globals.cdn_url }}{{ artist.image }}?class=w600&type=webp 400w,
+        {{ globals.cdn_url }}{{ artist.image }}?class=w800&type=webp 800w
+      "
+      sizes="(max-width: 450px) 200px,
+        (max-width: 850px) 400px,
+        800px"
+      src="{{ globals.cdn_url }}{{ artist.image }}?class=w200&type=webp"
+      alt="{{ alt | replaceQuotes }}"
+      loading="eager"
+      decoding="async"
+      width="200"
+      height="200"
+    />
+    <div class="media-meta">
+      <span class="title"><strong>{{ artist.name }}</strong></span>
+      <span class="sub-meta country"
+        >{% tablericon "map-pin" %} {{ artist.country }}</span
+      >
+      {%- if artist.favorite -%}
+      <span class="sub-meta favorite"
+        >{% tablericon "heart" %} This is one of my favorite artists!</span
+      >
+      {%- endif -%} {%- if artist.tattoo -%}
+      <span class="sub-meta tattoo"
+        >{% tablericon "needle" %} I have a tattoo inspired by this
+        artist!</span
+      >
+      {%- endif -%} {%- if artist.total_plays > 0 -%}
+      <span class="sub-meta"
+        ><strong class="highlight-text"
+          >{{ artist.total_plays }} {{ playLabel }}</strong
+        ></span
+      >
+      {%- endif -%}
+      <span class="sub-meta">
+        {{ emoji }}
+        <a
+          href="{{ artist.genre.url }}"
+          title="Learn more about {{ artist.genre.name | escape }}"
+        >
+          {{ artist.genre.name }}
+        </a>
+      </span>
+    </div>
+  </div>
+  {% render "blocks/associated-media.liquid", artists: artist.related_artists,
+  books: artist.books, genres: artist.genres, movies: artist.movies, posts:
+  artist.posts, shows: artist.shows %} {%- if artist.description -%}
+  <h2>Overview</h2>
+  <div data-toggle-content class="text-toggle-hidden">
+    {{ artist.description | markdown }}
+  </div>
+  <button data-toggle-button>Show more</button>
+  {%- endif -%} {%- if artist.concerts -%}
+  <p id="concerts" class="concerts">
+    {% tablericon "device-speaker" %} I've seen this artist live!
+  </p>
+  <ul>
+    {% for concert in artist.concerts %} {%- capture venue -%} {% if
+    concert.venue_name %} {% if concert.venue_latitude and
+    concert.venue_longitude %}
+    <a
+      href="https://www.openstreetmap.org/?mlat={{ concert.venue_latitude }}&mlon={{ concert.venue_longitude }}#map=18/{{ concert.venue_latitude }}/{{ concert.venue_longitude }}"
+      >{{ concert.venue_name_short }}</a
+    >
+    {% else %} {{ concert.venue_name_short }} {% endif %} {% endif %} {%-
+    endcapture -%}
+    <li>
+      On
+      <strong class="highlight-text"
+        >{{ concert.date | date: "%B %e, %Y" }}</strong
+      >
+      {% if venue %} at {{ venue }}{% endif %} {%- if concert.notes -%} {%
+      assign notes = concert.notes | prepend: "### Notes\n" | markdown %} {%
+      render "blocks/modal.liquid", label:"Concert info", icon:"info-circle",
+      content:notes, id:concert.id %} {%- endif -%}
+    </li>
+    {% endfor %}
+  </ul>
+  {%- endif -%}
+  <table>
+    <tr>
+      <th>Album</th>
+      <th>Plays</th>
+      <th>Year</th>
+    </tr>
+    {% for album in artist.albums %}
+    <tr>
+      <td>{{ album.name }}</td>
+      <td>{{ album.total_plays }}</td>
+      <td>{{ album.release_year }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p>
+    <em
+      >These are the albums by this artist that are in my collection, not
+      necessarily a comprehensive discography.</em
+    >
+  </p>
+</article>

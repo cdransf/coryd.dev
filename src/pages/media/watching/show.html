@@ -1,0 +1,66 @@
+---
+pagination:
+  data: tv.shows
+  size: 1
+  alias: show
+permalink: "{{ show.url }}/index.html"
+schema: show
+---
+{%- capture alt -%}
+  {{ show.title }} / {{ show.year }}
+{%- endcapture -%}
+<a class="back-link" href="/watching" title="Go back to the watching index page">{% tablericon "arrow-left" %} Back to watching</a>
+<article class="watching focus">
+  <img
+    srcset="
+      {{ globals.cdn_url }}{{ show.backdrop }}?class=bannersm&type=webp 256w,
+      {{ globals.cdn_url }}{{ show.backdrop }}?class=bannermd&type=webp 512w,
+      {{ globals.cdn_url }}{{ show.backdrop }}?class=bannerbase&type=webp 1024w
+    "
+    sizes="(max-width: 450px) 256px,
+      (max-width: 850px) 512px,
+      1024px"
+    src="{{ globals.cdn_url }}{{ show.backdrop }}?class=bannersm&type=webp"
+    alt="{{ alt | replaceQuotes }}"
+    class="image-banner"
+    loading="eager"
+    decoding="async"
+    width="256"
+    height="180"
+  />
+  <div class="media-meta">
+    <span class="title"><strong>{{ show.title }}</strong>{%- if show.year %} ({{ show.year }}){%- endif -%}</span>
+    {%- if show.favorite -%}
+      <span class="sub-meta favorite">{% tablericon "heart" %} This is one of my favorite shows!</span>
+    {%- endif -%}
+    {%- if show.tattoo -%}
+      <span class="sub-meta tattoo">{% tablericon "needle" %} I have a tattoo inspired by this show!</span>
+    {%- endif -%}
+    {%- if show.collected -%}
+      <span class="sub-meta collected">{% tablericon "circle-check" %} This show is in my collection!</span>
+    {%- endif -%}
+    {%- if show.episode.formatted_episode -%}
+      {%- capture lastWatchedText -%}
+        I last watched <strong class="highlight-text">{{ show.episode.formatted_episode }}</strong> on {{ show.episode.last_watched_at | date: "%B %e, %Y" }}.
+      {%- endcapture -%}
+      <span class="sub-meta">{{ lastWatchedText }}</span>
+    {%- endif -%}
+  </div>
+  {% if show.review %}
+  {% render "blocks/banners/warning.liquid", text: "There are probably spoilers after this banner — this is a warning about them." %}
+  <h2>My thoughts</h2>
+  {{ show.review | markdown }}
+  {% endif %}
+  {% render "blocks/associated-media.liquid",
+    artists: show.artists,
+    books: show.books,
+    genres: show.genres,
+    movies: show.movies,
+    posts: show.posts,
+    shows: show.related_shows
+  %}
+  {% if show.description %}
+    <h2>Overview</h2>
+    {{ show.description | markdown }}
+  {% endif %}
+</article>

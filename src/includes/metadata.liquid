@@ -1,0 +1,102 @@
+{%- assign fullUrl = globals.url | append: page.url -%}
+{%- assign pageTitle = globals.site_name -%}
+{%- assign pageDescription = globals.site_description -%}
+{%- assign ogImage = globals.cdn_url | append: globals.avatar -%}
+{%- case schema -%}
+  {%- when 'blog' -%}
+    {%- assign pageTitle = post.title -%}
+    {%- assign pageDescription = post.description | markdown | strip_html -%}
+    {%- assign ogImage = globals.cdn_url | append: post.image -%}
+  {%- when 'music', 'music-index', 'music-period' -%}
+    {%- if page.title -%}
+      {%- assign pageTitle = 'Music / ' | append: page.title -%}
+    {%- else -%}
+      {%- assign pageTitle = 'Music' -%}
+    {%- endif -%}
+    {%- if schema == 'music' -%}
+      {%- assign ogImage = globals.cdn_url | append: page.image -%}
+    {%- elsif schema == 'music-index' -%}
+      {%- assign ogImage = globals.cdn_url | append: music.week.artists[0].grid.image -%}
+    {%- elsif schema == 'music-period' -%}
+      {%- assign ogImage = globals.cdn_url | append: page.image -%}
+    {%- endif -%}
+  {%- when 'artist' -%}
+    {%- assign pageTitle = 'Artists / ' | append: artist.name -%}
+    {%- assign pageDescription = artist.description | markdown | strip_html | htmlTruncate -%}
+    {%- assign ogImage = globals.cdn_url | append: artist.image -%}
+  {%- when 'genre' -%}
+    {%- assign pageTitle = 'Music / ' | append: genre.name -%}
+    {%- assign pageDescription = genre.description | markdown | strip_html | htmlTruncate -%}
+    {%- assign ogImage = globals.cdn_url | append: genre.artists[0].image -%}
+  {%- when 'book' -%}
+    {%- assign pageTitle = 'Books / ' | append: book.title | append: ' by ' | append: book.author -%}
+    {%- assign pageDescription = book.review | markdown | strip_html | default: book.description | htmlTruncate -%}
+    {%- assign ogImage = globals.cdn_url | append: book.image -%}
+  {%- when 'books' -%}
+    {%- assign pageTitle = 'Books' -%}
+    {%- assign overviewBook = books.all | filterBooksByStatus: 'started' | reverse | first %}
+    {%- assign ogImage = globals.cdn_url | append: overviewBook.image -%}
+  {%- when 'books-year' -%}
+    {%- assign bookData = year.data | filterBooksByStatus: 'finished' -%}
+    {%- assign bookYear = bookData | shuffleArray | first -%}
+    {%- assign ogImage = globals.cdn_url | append: bookYear.image -%}
+  {%- when 'movie' -%}
+    {%- assign pageTitle = 'Movies / ' | append: movie.title -%}
+    {%- if movie.rating -%}
+      {%- assign pageTitle = pageTitle | append: ' (' | append: movie.rating | append: ')' -%}
+    {%- endif -%}
+    {%- assign pageDescription = movie.review | markdown | strip_html | default: movie.description | htmlTruncate -%}
+    {%- assign ogImage = globals.cdn_url | append: movie.backdrop -%}
+  {%- when 'favorite-movies' -%}
+    {%- assign pageTitle = 'Favorite movies' -%}
+    {%- assign favoriteMovie = movies.favorites | shuffleArray | first %}
+    {%- assign ogImage = globals.cdn_url | append: favoriteMovie.backdrop -%}
+  {%- when 'show' -%}
+    {%- assign pageTitle = 'Show / ' | append: show.title -%}
+    {%- assign pageDescription = show.review | markdown | strip_html | default: show.description | htmlTruncate -%}
+    {%- assign ogImage = globals.cdn_url | append: show.backdrop -%}
+  {%- when 'favorite-shows' -%}
+    {%- assign pageTitle = 'Favorite shows' -%}
+    {%- assign favoriteShow = tv.favorites | shuffleArray | first %}
+    {%- assign ogImage = globals.cdn_url | append: favoriteShow.backdrop -%}
+  {%- when 'watching' -%}
+    {%- assign pageTitle = 'Watching' -%}
+    {%- assign overviewMovie = movies.recentlyWatched | first %}
+    {%- assign ogImage = globals.cdn_url | append: overviewMovie.backdrop -%}
+  {%- when 'page' -%}
+    {%- assign pageTitle = page.title -%}
+    {%- assign pageDescription = page.description -%}
+{% endcase %}
+{%- if title -%}
+  {%- assign pageTitle = title -%}
+{%- endif -%}
+{%- if description -%}
+  {%- assign pageDescription = description -%}
+{%- endif -%}
+{%- if pageTitle != globals.site_name and schema != 'blog' -%}
+  {%- assign pageTitle = pageTitle | append: ' / ' | append: globals.site_name -%}
+{%- endif -%}
+{%- assign escapedPageDescription = pageDescription | escape -%}
+<meta charset="utf-8"  />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<title>{{ pageTitle }}</title>
+<link rel="canonical" href="{{ fullUrl }}" />
+<meta property="og:title" content="{{ pageTitle }}" />
+<meta name="description" content="{{ escapedPageDescription }}" />
+<meta property="og:description" content="{{ escapedPageDescription }}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{{ fullUrl }}" />
+<meta property="og:image" content="{{ ogImage }}?class=w800" />
+<meta name="theme-color" content="{{ globals.theme_color }}" />
+<meta name="fediverse:creator" content="{{ globals.mastodon }}" />
+<meta name="generator" content="11ty" />
+<meta name="robots" content="noai, noimageai" />
+<link href="{{ globals.cdn_url }}{{ globals.avatar_transparent }}?class=w50&v={% appVersion %}" rel="icon" sizes="any" />
+<link href="{{ globals.cdn_url }}{{ globals.avatar_transparent }}?class=w50&v={% appVersion %}&type=svg" rel="icon" type="image/svg+xml" />
+<link href="{{ globals.cdn_url }}{{ globals.avatar }}?class=w800&v={% appVersion %}" rel="apple-touch-icon" />
+<link rel="alternate" href="https://coryd.dev/feeds/posts.xml" title="Posts / {{ globals.site_name }}" />
+<link rel="alternate" href="https://coryd.dev/feeds/links.xml" title="Links / {{ globals.site_name }}" type="application/rss+xml" />
+<link rel="alternate" href="https://coryd.dev/feeds/movies.xml" title="Movies / {{ globals.site_name }}" type="application/rss+xml" />
+<link rel="alternate" href="https://coryd.dev/feeds/books.xml" title="Books / {{ globals.site_name }}" type="application/rss+xml" />
+<link rel="alternate" href="https://coryd.dev/feeds/all.xml" title="All activity / {{ globals.site_name }}" type="application/rss+xml" />

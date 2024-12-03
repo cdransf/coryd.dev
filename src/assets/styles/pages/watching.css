@@ -1,0 +1,29 @@
+.watching.hero {
+  position: relative;
+
+  & img {
+    aspect-ratio: var(--aspect-ratio-banner);
+  }
+
+  & .meta-text {
+    color: var(--color-lightest);
+    position: absolute;
+    z-index: 2;
+    left: var(--spacing-sm);
+    bottom: var(--spacing-sm);
+
+    & .header {
+      font-weight: var(--font-weight-bold);
+    }
+
+    & .subheader {
+      font-size: var(--font-size-sm);
+    }
+
+    & .header,
+    & .subheader {
+      line-height: var(--line-height-md);
+      text-shadow: var(--text-shadow-default);
+    }
+  }
+}

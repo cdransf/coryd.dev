@@ -1,0 +1,37 @@
+@layer reset, defaults, base, page, components, plugins;
+
+/* style resets */
+@import url("./base/reset.css") layer(reset);
+
+/* core defaults */
+@import url("./base/fonts.css") layer(defaults);
+@import url("./base/vars.css") layer(defaults);
+
+/* base styles */
+@import url("./base/index.css") layer(base);
+
+/* page styles */
+@import url("./pages/about.css") layer(page);
+@import url("./pages/books.css") layer(page);
+@import url("./pages/contact.css") layer(page);
+@import url("./pages/links.css") layer(page);
+@import url("./pages/media.css") layer(page);
+@import url("./pages/music.css") layer(page);
+@import url("./pages/watching.css") layer(page);
+@import url("./pages/webrings.css") layer(page);
+
+/* plugins */
+@import url("./plugins/prism.css") layer(plugins);
+
+/* component styles */
+@import url("./components/addon-links.css") layer(components);
+@import url("./components/banners.css") layer(components);
+@import url("./components/buttons.css") layer(components);
+@import url("./components/forms.css") layer(components);
+@import url("./components/media-grid.css") layer(components);
+@import url("./components/menu.css") layer(components);
+@import url("./components/modal.css") layer(components);
+@import url("./components/music-chart.css") layer(components);
+@import url("./components/paginator.css") layer(components);
+@import url("./components/progress-bar.css") layer(components);
+@import url("./components/youtube-player.css") layer(components);

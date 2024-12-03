@@ -1,0 +1,56 @@
+---
+pagination:
+  data: posts
+  size: 1
+  alias: post
+permalink: "{{ post.url }}.html"
+schema: blog
+---
+<article class="standalone">
+  <div class="post-meta">
+    {%- if post.featured -%}{% tablericon "star" %}{%- endif -%}
+    <time datetime="{{ post.date }}">
+      {{ post.date | date: "%B %e, %Y" }}
+    </time>
+  </div>
+  <h3>
+    {{ post.title }}
+  </h3>
+  <div>
+    {% render "blocks/banners/old-post.liquid", isOldPost:post.old_post %}
+    {%- if post.image -%}
+    <img
+      srcset="
+        {{ globals.cdn_url }}{{ post.image }}?class=w200&type=webp 200w,
+        {{ globals.cdn_url }}{{ post.image }}?class=w400&type=webp 400w,
+        {{ globals.cdn_url }}{{ post.image }}?class=w800&type=webp 800w,
+        {{ globals.cdn_url }}{{ post.image }}?class=w1600&type=webp 1600w
+      "
+      sizes="(max-width: 450px) 200px,
+        (max-width: 850px) 400px,
+        (max-width: 1000px) 800px,
+        1200px"
+      src="{{ globals.cdn_url }}{{ post.image }}?class=w200"
+      alt="{{ post.image_alt | replaceQuotes }}"
+      class="image-banner"
+      loading="eager"
+      decoding="async"
+      width="200"
+      height="auto"
+    />
+    {%- endif -%}
+    {{ post.content | markdown }}
+    {% render "blocks/index.liquid", blocks:post.blocks %}
+    {% render "blocks/associated-media.liquid",
+      artists: post.artists,
+      books: post.books,
+      genres: post.genres,
+      movies: post.movies,
+      posts: post.posts,
+      shows: post.shows
+    %}
+    {% render "blocks/banners/mastodon.liquid" url:post.mastodon_url %}
+    {% render "blocks/banners/coffee.liquid" %}
+    {% render "blocks/links/addon-links.liquid", popularPosts:collections.popularPosts, links:links %}
+  </div>
+</article>

@@ -1,0 +1,11 @@
+---
+layout: null
+eleventyExcludeFromCollections: true
+permalink: "/feeds/syndication.xml"
+---
+{% render "feeds/syndication.rss.liquid"
+  permalink:"/feeds/syndication.xml"
+  title:"Syndicated content / Cory Dransfeldt"
+  globals:globals
+  data:syndication
+%}

@@ -1,0 +1,136 @@
+menu {
+  & .menu-primary {
+    position: absolute;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+    top: calc(var(--spacing-3xl) * 1.75);
+    left: 0;
+    width: 100%;
+    z-index: 3;
+
+    & > li {
+      overflow: hidden;
+      margin: 0;
+      padding: var(--spacing-sm) 0;
+      width: 100%;
+      background: var(--background-color);
+
+      & a,
+      & .active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      & a {
+        text-decoration: none;
+      }
+
+      & .active {
+        cursor: not-allowed;
+      }
+
+      :is(.icon, .active) svg {
+        display: none;
+      }
+
+      :is(.icon, .active) span {
+        display: inline;
+      }
+    }
+  }
+
+  #menu-toggle {
+    display: none;
+
+    &:checked + .menu-button-container {
+      & .menu-closed {
+        display: none;
+      }
+
+      & .menu-open {
+        display: block;
+      }
+    }
+
+    &:not(:checked) + .menu-button-container {
+      & .menu-closed {
+        display: block;
+      }
+
+      & .menu-open {
+        display: none;
+      }
+    }
+
+    & ~ .menu-primary li {
+      height: 0;
+      padding: 0;
+      font-size: var(--font-size-lg);
+    }
+
+    &:checked ~ .menu-primary li {
+      height: calc(var(--sizing-3xl) * 1.5);
+
+      @media (max-width: 767px) {
+        border-bottom: var(--border-gray);
+      }
+
+      &:first-child {
+        @media (max-width: 767px) {
+          border-top: var(--border-gray);
+        }
+      }
+    }
+  }
+
+  .menu-button-container {
+    display: unset;
+
+    & svg {
+      cursor: pointer;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .menu-primary {
+      display: flex;
+      flex-direction: row;
+      margin: 0;
+      gap: var(--spacing-md);
+      position: relative;
+      top: unset;
+      left: unset;
+      width: auto;
+
+      & > li {
+        background: none;
+
+        & a {
+          width: var(--sizing-svg-base);
+          height: var(--sizing-svg-base);
+        }
+
+        :is(.icon, .active) svg {
+          display: block;
+        }
+
+        :is(.icon, .active) span {
+          display: none;
+        }
+      }
+    }
+
+    #menu-toggle ~ .menu-primary li,
+    #menu-toggle:checked ~ .menu-primary li {
+      height: unset;
+    }
+
+    .menu-button-container {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{%- if popularPosts.size > 0 -%}
+  <article>
+    <h3>
+      <a class="article" href="/posts">
+        {% tablericon "chart-bar-popular" "Popular" %}
+        Popular posts
+      </a>
+    </h3>
+    <ol type="1">
+      {%- for post in popularPosts limit: 5 -%}
+        <li>
+          <a href="{{ post.url }}">{{ post.title }}</a>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </article>
+{%- endif -%}

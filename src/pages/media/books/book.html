@@ -1,0 +1,70 @@
+---
+pagination:
+  data: books.all
+  size: 1
+  alias: book
+permalink: "{{ book.url }}/index.html"
+schema: book
+---
+{%- capture alt -%}
+  {{ book.title }}{% if book.author %} by {{ book.author }}{% endif %}
+{%- endcapture -%}
+<a class="back-link" href="/books" title="Go back to the books index page">{% tablericon "arrow-left" %} Back to books</a>
+<article class="book-focus">
+  <div class="book-display">
+    <img
+      srcset="
+        {{ globals.cdn_url }}{{ book.image }}?class=verticalsm&type=webp 200w,
+        {{ globals.cdn_url }}{{ book.image }}?class=verticalmd&type=webp 400w,
+        {{ globals.cdn_url }}{{ book.image }}?class=verticalbase&type=webp 800w
+      "
+      sizes="(max-width: 450px) 203px,
+        (max-width: 850px) 406px,
+        (max-width: 1000px) 812px,
+        812px"
+      src="{{ globals.cdn_url }}{{ book.image }}?class=verticalsm&type=webp"
+      alt="{{ alt | replaceQuotes }}"
+      loading="lazy"
+      decoding="async"
+      width="200"
+      height="307"
+    />
+    <div class="media-meta">
+      <span class="title"><strong>{{ book.title }}</strong></span>
+      {% if book.rating %}<span>{{ book.rating }}</span>{% endif %}
+      {% if book.author %}
+        <span class="sub-meta">By {{ book.author }}</span>
+      {% endif %}
+      {%- if book.favorite -%}
+        <span class="sub-meta favorite">{% tablericon "heart" %} This is one of my favorite books!</span>
+      {%- endif -%}
+      {%- if book.tattoo -%}
+        <span class="sub-meta tattoo">{% tablericon "needle" %} I have a tattoo inspired by this book!</span>
+      {%- endif -%}
+      {% if book.status == 'finished' %}
+        <span class="sub-meta">Finished on: <strong class="highlight-text">{{ book.date_finished | date: "%B %e, %Y" }}</strong></span>
+      {% endif %}
+      {% if book.status == 'started' %}
+        {%- assign percentage = book.progress | append: '%' -%}
+        {% render "media/progress-bar.liquid", percentage:percentage %}
+      {% endif %}
+    </div>
+  </div>
+  {% if book.review %}
+  {% render "blocks/banners/warning.liquid", text: "There are probably spoilers after this banner — this is a warning about them." %}
+  <h2>My thoughts</h2>
+  {{ book.review | markdown }}
+  {% endif %}
+  {% render "blocks/associated-media.liquid",
+      artists: book.artists,
+      books: book.related_books,
+      genres: book.genres,
+      movies: book.movies,
+      posts: book.posts,
+      shows: book.shows
+    %}
+  {% if book.description %}
+    <h2>Overview</h2>
+    {{ book.description | markdown }}
+  {% endif %}
+</article>

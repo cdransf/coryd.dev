@@ -1,0 +1,30 @@
+<div class="music-chart">
+  {%- for item in data limit: 10 -%}
+    <div class="item">
+      <div class="meta">
+        <a href="{{ item.chart.url }}">
+          <img
+            srcset="
+              {{ globals.cdn_url }}{{ item.chart.image }}?class=w50&type=webp 50w,
+              {{ globals.cdn_url }}{{ item.chart.image }}?class=w100&type=webp 100w
+            "
+            sizes="(max-width: 450px) 50px, 100px"
+            src="{{ globals.cdn_url }}{{ item.chart.image }}?class=w50&type=webp"
+            alt="{{ item.chart.alt | replaceQuotes }}"
+            loading="lazy"
+            decoding="async"
+            width="64"
+            height="64"
+          />
+        </a>
+        <div class="meta-text">
+          <a class="title" href="{{ item.chart.url }}">{{ item.chart.title }}</a>
+          <span class="subtext">{{ item.chart.subtext }}</span>
+        </div>
+      </div>
+      <time datetime="item.chart.played_at">
+        {{ item.chart.played_at | date: "%B %-d, %-I:%M%p", "America/Los_Angeles" }}
+      </time>
+    </div>
+  {%- endfor -%}
+</div>

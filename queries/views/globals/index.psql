@@ -1,0 +1,22 @@
+CREATE OR REPLACE VIEW optimized_globals AS
+SELECT
+    g.site_name,
+    g.site_description,
+    g.intro,
+    g.author,
+    g.email,
+    g.mastodon,
+    g.url,
+    g.cdn_url,
+    g.theme_color,
+    g.site_type,
+    g.locale,
+    g.lang,
+    g.webfinger_username,
+    g.webfinger_hostname,
+    CONCAT('/', df.filename_disk) AS avatar,
+    CONCAT('/', df2.filename_disk) AS avatar_transparent
+FROM
+    globals g
+    LEFT JOIN directus_files df ON g.avatar = df.id
+    LEFT JOIN directus_files df2 ON g.avatar_transparent = df2.id

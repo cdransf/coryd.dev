@@ -1,0 +1,11 @@
+CREATE OR REPLACE VIEW optimized_blogroll AS
+SELECT
+    name,
+    url,
+    rss_feed,
+    json_feed,
+    newsletter,
+    mastodon
+FROM authors
+WHERE blogroll = true
+ORDER BY name ASC;

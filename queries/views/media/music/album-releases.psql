@@ -1,0 +1,17 @@
+CREATE OR REPLACE VIEW optimized_album_releases AS
+SELECT
+  a.name AS title,
+  a.release_date,
+  a.release_link AS url,
+  a.total_plays,
+  CONCAT('/', df.filename_disk) AS image,
+  json_build_object('name', ar.name_string, 'url', ar.slug, 'description', ar.description) AS artist,
+  EXTRACT(EPOCH FROM a.release_date) AS release_timestamp,
+  json_build_object('title', a.name, 'image', CONCAT('/', df.filename_disk), 'url', a.release_link, 'alt', CONCAT(a.name, ' by ', ar.name_string), 'subtext', CONCAT(ar.name_string, ' / ', TO_CHAR(a.release_date, 'Mon FMDD, YYYY'))) AS grid
+FROM
+  albums a
+  LEFT JOIN directus_files df ON a.art = df.id
+  LEFT JOIN artists ar ON a.artist = ar.id
+WHERE
+  a.release_date IS NOT NULL;
+

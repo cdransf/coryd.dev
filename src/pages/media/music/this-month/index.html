@@ -1,0 +1,42 @@
+---
+title: This month
+description: This is everything I've been listening to this month — it's collected in a database as I listen to it and displayed here.
+permalink: "/music/this-month.html"
+updated: "now"
+image: music.month.artists[0].image
+schema: music-period
+---
+
+<h2 class="page-title">{{ title }}</h2>
+<p>
+  I've listened to
+  <strong class="highlight-text">{{ music.month.artists.size }} artists</strong
+  >,
+  <strong class="highlight-text">{{ music.month.albums.size }} albums</strong>
+  and
+  <strong class="highlight-text">{{ music.month.totalTracks }} tracks</strong>
+  this month. Most of that has been {{ music.month.genres | mediaLinks: "genre",
+  5 }}.
+</p>
+<p>
+  <strong class="highlight-text">Take a look at what I've listened to</strong>
+  <a href="/music">this week</a> or
+  <a href="/music/concerts">check out the concerts I've been to.</a>
+</p>
+<hr />
+<h3 id="artists">
+  <a href="/music/this-month/artists">
+    {% tablericon "microphone-2" %} Artists
+  </a>
+</h3>
+{% render "media/grid.liquid", globals:globals, data:music.month.artists,
+shape:"square", count: 8, loading: "eager" %}
+<h3 id="albums">
+  <a href="/music/this-month/albums">
+    {% tablericon "vinyl" %} Albums
+  </a>
+</h3>
+{% render "media/grid.liquid", globals:globals, data:music.month.albums,
+shape:"square", count: 8 %}
+<h3 id="tracks">{% tablericon "playlist" %} Tracks</h3>
+{% render "media/music/chart.liquid", data:music.month.tracks, count: 10 %}

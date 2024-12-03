@@ -1,0 +1,103 @@
+.music-chart {
+  margin: var(--margin-vertical-base-horizontal-zero);
+
+  & ol {
+    padding-left: 0;
+
+    @media screen and (min-width: 768px) {
+      list-style-position: outside;
+    }
+  }
+
+  & .item {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+
+    &:not(:last-of-type) {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    @media screen and (min-width: 768px) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    & .progress-bar-wrapper {
+      max-width: 40%;
+
+      @media screen and (max-width: 768px) {
+        margin-top: var(--spacing-sm);
+      }
+    }
+
+    & img {
+      width: calc(var(--sizing-3xl) * 1.5);
+      height: calc(var(--sizing-3xl) * 1.5);
+
+      @media screen and (min-width: 768px) {
+        width: calc(var(--sizing-3xl) * 2);
+        height: calc(var(--sizing-3xl) * 2);
+      }
+    }
+
+    & .info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xs);
+
+      @media screen and (min-width: 768px) {
+        max-width: calc(75% - var(--sizing-lg));
+      }
+    }
+
+    & .meta {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--spacing-md);
+
+      @media screen and (min-width: 768px) {
+        width: calc(75% - var(--sizing-lg));
+      }
+    }
+
+    & .meta-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      gap: var(--spacing-xs);
+
+      @media screen and (min-width: 768px) {
+        max-width: 85%;
+      }
+    }
+
+    & .title {
+      font-weight: var(--font-weight-bold);
+    }
+
+    & .title,
+    & .subtext,
+    & time {
+      line-height: var(--line-height-md);
+      word-break: break-word;
+    }
+
+    & .subtext,
+    & time {
+      font-size: var(--font-size-sm);
+    }
+
+    & time {
+      margin-top: var(--spacing-sm);
+
+      @media screen and (min-width: 768px) {
+        text-align: right;
+        white-space: nowrap;
+      }
+    }
+  }
+}

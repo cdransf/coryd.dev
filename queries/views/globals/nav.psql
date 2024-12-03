@@ -1,0 +1,14 @@
+CREATE OR REPLACE VIEW optimized_navigation AS
+SELECT
+    n.id,
+    n.menu_location,
+    n.permalink,
+    n.icon,
+    n.title,
+    n.sort,
+    p.title AS page_title,
+    p.permalink AS page_permalink
+FROM
+    navigation n
+    LEFT JOIN pages p ON n.pages = p.id;
+

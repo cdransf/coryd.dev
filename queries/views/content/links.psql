@@ -1,0 +1,26 @@
+CREATE OR REPLACE VIEW optimized_links AS
+SELECT
+    l.id,
+    l.title,
+    l.date,
+    l.description,
+    l.link,
+    a.mastodon,
+    a.name,
+    json_build_object('name', a.name, 'url', a.url, 'mastodon', a.mastodon) AS author,
+    'link' AS type,
+(
+        SELECT
+            array_agg(t.name)
+        FROM
+            links_tags lt
+        LEFT JOIN tags t ON lt.tags_id = t.id
+    WHERE
+        lt.links_id = l.id) AS tags,
+json_build_object('title', CONCAT(l.title, ' via ', a.name), 'url', l.link, 'description', l.description, 'date', l.date) AS feed
+FROM
+    links l
+    JOIN authors a ON l.author = a.id
+ORDER BY
+    l.date DESC;
+

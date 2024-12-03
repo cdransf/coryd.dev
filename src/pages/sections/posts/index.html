@@ -1,0 +1,22 @@
+---
+title: All posts
+pagination:
+  data: posts
+  size: 15
+permalink: "/posts/{% if pagination.pageNumber > 0 %}{{ pagination.pageNumber }}/{% endif %}index.html"
+---
+{% for post in pagination.items %}
+<article>
+  <div class="post-meta">
+    {%- if post.featured -%}{% tablericon "star" %}{%- endif -%}
+    <time datetime="{{ post.date }}">
+      {{ post.date | date: "%B %e, %Y" }}
+    </time>
+  </div>
+  <h3>
+    <a href="{{ post.url }}">{{ post.title }}</a>
+  </h3>
+  <p>{{ post.description | markdown }}</p>
+</article>
+{% endfor %}
+{% render "nav/paginator.liquid", pagination:pagination %}

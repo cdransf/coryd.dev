@@ -1,0 +1,110 @@
+CREATE OR REPLACE VIEW optimized_movies AS
+SELECT
+  m.id,
+  m.last_watched,
+  m.title,
+  m.year,
+  m.collected,
+  m.plays,
+  m.favorite,
+  m.tattoo,
+  m.star_rating AS rating,
+  m.description,
+  m.review,
+  m.slug AS url,
+  CONCAT('/', df.filename_disk) AS image,
+  CONCAT('/', df2.filename_disk) AS backdrop,
+  json_build_object('title', m.title, 'url', m.slug, 'image', CONCAT('/', df.filename_disk), 'backdrop', CONCAT('/', df2.filename_disk), 'alt', CONCAT('Poster from ', m.title, ' (', m.year, ')'), 'subtext', CASE WHEN m.star_rating IS NOT NULL THEN
+      CONCAT(m.star_rating, ' (', m.year, ')')
+    ELSE
+      CONCAT('(', m.year, ')')
+    END) AS grid,
+(
+    SELECT
+      array_agg(t.name)
+    FROM
+      movies_tags mt
+    LEFT JOIN tags t ON mt.tags_id = t.id
+  WHERE
+    mt.movies_id = m.id) AS tags,
+(
+  SELECT
+    json_agg(json_build_object('name', g.name, 'url', g.slug)
+    ORDER BY g.name ASC)
+  FROM
+    genres_movies gm
+  LEFT JOIN genres g ON gm.genres_id = g.id
+WHERE
+  gm.movies_id = m.id) AS genres,
+(
+  SELECT
+    json_agg(json_build_object('name', a.name_string, 'url', a.slug, 'country', a.country, 'total_plays', a.total_plays)
+    ORDER BY a.name_string ASC)
+  FROM
+    movies_artists ma
+  LEFT JOIN artists a ON ma.artists_id = a.id
+WHERE
+  ma.movies_id = m.id) AS artists,
+(
+  SELECT
+    json_agg(json_build_object('title', b.title, 'author', b.author, 'url', b.slug)
+    ORDER BY b.title ASC)
+  FROM
+    movies_books mb
+  LEFT JOIN books b ON mb.books_id = b.id
+WHERE
+  mb.movies_id = m.id) AS books,
+(
+  SELECT
+    json_agg(json_build_object('title', s.title, 'year', s.year, 'url', s.slug)
+    ORDER BY s.year DESC)
+  FROM
+    shows_movies sm
+  LEFT JOIN shows s ON sm.shows_id = s.id
+WHERE
+  sm.movies_id = m.id) AS shows,
+(
+  SELECT
+    json_agg(json_build_object('title', p.title, 'date', p.date, 'url', p.slug)
+    ORDER BY p.date DESC)
+  FROM
+    posts_movies pm
+  LEFT JOIN posts p ON pm.posts_id = p.id
+WHERE
+  pm.movies_id = m.id) AS posts,
+(
+  SELECT
+    json_agg(json_build_object('title', rm.title, 'year', rm.year, 'url', rm.slug)
+    ORDER BY rm.year DESC)
+  FROM
+    related_movies r
+  LEFT JOIN movies rm ON r.related_movies_id = rm.id
+WHERE
+  r.movies_id = m.id) AS related_movies,
+CASE WHEN m.star_rating IS NOT NULL
+  AND m.last_watched IS NOT NULL THEN
+  json_build_object('title', CONCAT(m.title, CASE WHEN m.star_rating IS NOT NULL THEN
+        CONCAT(' (', m.star_rating, ')')
+      ELSE
+        ''
+      END), 'url', CONCAT('https://coryd.dev', m.slug), 'date', m.last_watched, 'description', CASE WHEN m.review IS NOT NULL THEN
+      m.review
+    ELSE
+      m.description
+    END, 'image', CONCAT('/', df2.filename_disk), 'rating', m.star_rating)
+ELSE
+  NULL
+END AS feed
+FROM
+  movies m
+  LEFT JOIN directus_files df ON m.art = df.id
+  LEFT JOIN directus_files df2 ON m.backdrop = df2.id
+GROUP BY
+  m.id,
+  df.filename_disk,
+  df2.filename_disk
+ORDER BY
+  m.last_watched DESC,
+  m.favorite DESC,
+  m.title ASC;
+

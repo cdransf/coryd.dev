@@ -1,0 +1,240 @@
+---
+title: Search
+permalink: /search.html
+description: Search through posts and other content on my site.
+---
+
+<h2 class="page-title">Search</h2>
+<p>
+  You can find <a href="/posts">posts</a>, <a href="/links">links</a>,
+  <a href="/music/#artists">artists</a>, genres,
+  <a href="/watching#movies">movies</a>, <a href="/watching#tv">shows</a> and
+  <a href="/books">books</a> via the field below (though it only surfaces movies
+  and shows I've watched and books I've written something about).
+</p>
+<noscript>
+  <p>
+    <strong class="highlight-text"
+      >If you're seeing this it means that you've (quite likely) disabled
+      JavaScript (that's a totally valid choice!).</strong
+    >
+    You can search for anything on my site using the form below, but your query
+    will be routed through
+    <a href="https://duckduckgo.com">DuckDuckGo</a>.
+  </p>
+  <p>
+    <strong class="highlight-text">Type something in and hit enter.</strong>
+  </p>
+</noscript>
+<form class="search__form" action="https://duckduckgo.com" method="get">
+  <input
+    class="search__form--input"
+    placeholder="Search"
+    type="search"
+    name="q"
+    autocomplete="off"
+    autofocus
+    onkeydown="return event.key !== 'Enter'"
+  />
+  <details>
+    <summary class="highlight-text">Filter by type</summary>
+    <fieldset class="search__form--type">
+      <label>
+        <input type="checkbox" name="type" value="post" checked />
+        post
+      </label>
+      <label>
+        <input type="checkbox" name="type" value="artist" checked />
+        artist
+      </label>
+      <label>
+        <input type="checkbox" name="type" value="genre" checked />
+        genre
+      </label>
+      <label>
+        <input type="checkbox" name="type" value="book" checked />
+        book
+      </label>
+      <label>
+        <input type="checkbox" name="type" value="movie" checked />
+        movie
+      </label>
+      <label>
+        <input type="checkbox" name="type" value="show" checked />
+        show
+      </label>
+    </fieldset>
+  </details>
+  <input
+    class="search__form--fallback"
+    type="hidden"
+    name="sites"
+    value="coryd.dev"
+  />
+</form>
+<ul class="search__results client-side"></ul>
+{% render "blocks/links/addon-links.liquid",
+  popularPosts:collections.popularPosts,
+  links:links
+%}
+<button class="search__load-more client-side" style="display: none">
+  Load More
+</button>
+<script src="assets/scripts/components/minisearch.js"></script>
+<script>
+  import { sanitizeContent, htmlTruncate, md } from "@utils/helpers/general.js";
+
+  window.addEventListener("load", () => {
+    (() => {
+      const miniSearch = new MiniSearch({
+        fields: ["title", "description", "tags", "type"],
+        idField: "id",
+        storeFields: [
+          "id",
+          "title",
+          "url",
+          "description",
+          "type",
+          "tags",
+          "total_plays",
+        ],
+        searchOptions: {
+          fields: ["title", "tags"],
+          prefix: true,
+          fuzzy: 0.1,
+          boost: { title: 5, tags: 2, description: 1 },
+        },
+      });
+
+      const $form = document.querySelector(".search__form");
+      const $fallback = document.querySelector(".search__form--fallback");
+      const $input = document.querySelector(".search__form--input");
+      const $results = document.querySelector(".search__results");
+      const $loadMoreButton = document.querySelector(".search__load-more");
+      const $typeCheckboxes = document.querySelectorAll(
+        '.search__form--type input[type="checkbox"]',
+      );
+
+      $form.removeAttribute("action");
+      $form.removeAttribute("method");
+      if ($fallback) $fallback.remove();
+
+      const PAGE_SIZE = 10;
+      let currentPage = 1;
+      let currentResults = [];
+      let total = 0;
+      let debounceTimeout;
+
+      const renderSearchResults = (results) => {
+        const resultHTML = results
+          .map(
+            ({ title, url, description, type, total_plays }) => `
+          <li class="search__results--result">
+            <h3>
+              <a href="${url}">${title}</a>
+              ${` <strong class="highlight-text">${total_plays} plays</strong>`}
+            </h3>
+            <p>${htmlTruncate(sanitizeContent(md(description)))}</p>
+          </li>
+        `
+          )
+          .join("");
+
+        const noResultsHTML = `
+          <li class="search__results--no-results">No results found.</li>
+        `;
+
+        $results.innerHTML = results.length ? resultHTML : noResultsHTML;
+        $results.style.display = "block";
+      };
+
+      const loadSearchIndex = async (query, types, page) => {
+        try {
+          const typeQuery = types.join(",");
+          const response = await fetch(
+            `https://coryd.dev/api/search?q=${query}&type=${typeQuery}&page=${page}&pageSize=${PAGE_SIZE}`,
+          );
+          const { results, total: newTotal } = await response.json();
+          total = newTotal;
+
+          const formattedResults = results.map((item) => ({
+            ...item,
+            id: item.result_id,
+          }));
+          miniSearch.removeAll();
+          miniSearch.addAll(formattedResults);
+          return formattedResults;
+        } catch (error) {
+          console.error("Error fetching search data:", error);
+          return [];
+        }
+      };
+
+      const getSelectedTypes = () =>
+        Array.from($typeCheckboxes)
+          .filter((cb) => cb.checked)
+          .map((cb) => cb.value);
+
+      const updateSearchResults = (results) => {
+        if (currentPage === 1) {
+          renderSearchResults(results);
+        } else {
+          appendSearchResults(results);
+        }
+        $loadMoreButton.style.display =
+          currentPage * PAGE_SIZE < total ? "block" : "none";
+      };
+
+      const appendSearchResults = (results) => {
+        const newResultsHTML = results
+          .map(
+            ({ title, url, description, type, total_plays }) => `
+          <li class="search__results--result">
+            <h3>
+              <a href="${url}">${title}</a>
+              ${` <strong class="highlight-text">${total_plays} plays</strong>`}
+            </h3>
+            <p>${htmlTruncate(sanitizeContent(md(description)))}</p>
+          </li>
+        `,
+          )
+          .join("");
+        $results.insertAdjacentHTML("beforeend", newResultsHTML);
+      };
+
+      const handleSearch = async () => {
+        const query = $input.value.trim();
+        if (!query) {
+          renderSearchResults([]);
+          $loadMoreButton.style.display = "none";
+          return;
+        }
+
+        const results = await loadSearchIndex(query, getSelectedTypes(), 1);
+        currentResults = results;
+        currentPage = 1;
+        updateSearchResults(results);
+      };
+
+      $input.addEventListener("input", () => {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(handleSearch, 200);
+      });
+
+      $typeCheckboxes.forEach((cb) =>
+        cb.addEventListener("change", handleSearch),
+      );
+
+      $loadMoreButton.addEventListener("click", async () => {
+        currentPage++;
+        const nextResults = await loadSearchIndex(
+          $input.value.trim(),
+          getSelectedTypes(),
+          currentPage,
+        );
+        currentResults = [...currentResults, ...nextResults];
+        updateSearchResults(nextResults);
+      });
+    })();
+  });
+</script>

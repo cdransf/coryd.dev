@@ -1,0 +1,87 @@
+CREATE OR REPLACE VIEW optimized_all_activity AS
+WITH feed_data AS (
+    SELECT
+        p.date AS content_date,
+        p.title,
+        p.content AS description,
+        CONCAT('https://coryd.dev', p.url) AS url,
+        NULL AS image,
+        NULL AS rating,
+        p.tags,
+        json_build_object('title', p.title, 'url', CONCAT('https://coryd.dev', p.url), 'description', p.content, 'date', p.date) AS feed
+    FROM
+        optimized_posts p
+    UNION ALL
+    SELECT
+        l.date AS content_date,
+        l.title,
+        l.description,
+        l.link AS url,
+        NULL AS image,
+        NULL AS rating,
+        l.tags,
+        json_build_object('title', CONCAT(l.title, ' via ', l.name), 'url', l.link, 'description', l.description, 'date', l.date) AS feed
+    FROM
+        optimized_links l
+    UNION ALL
+    SELECT
+        b.date_finished AS content_date,
+        b.title,
+        b.description,
+        CONCAT('https://coryd.dev', b.url) AS url,
+        b.image,
+        b.rating,
+        b.tags,
+        CASE WHEN LOWER(b.status) = 'finished' THEN
+            json_build_object('title', CONCAT(b.title, ' by ', b.author, CASE WHEN b.rating IS NOT NULL THEN
+                        CONCAT(' (', b.rating, ')')
+                    ELSE
+                        ''
+                    END), 'url', CONCAT('https://coryd.dev', b.url), 'description', CASE WHEN b.review IS NOT NULL THEN
+                    b.review
+                ELSE
+                    b.description
+                END, 'image', b.image, 'rating', b.rating, 'date', b.date_finished)
+        ELSE
+            NULL
+        END AS feed
+    FROM
+        optimized_books b
+    UNION ALL
+    SELECT
+        m.last_watched AS content_date,
+        m.title,
+        m.description,
+        CONCAT('https://coryd.dev', m.url) AS url,
+        m.image,
+        m.rating,
+        m.tags,
+        CASE WHEN m.last_watched IS NOT NULL THEN
+            json_build_object('title', CONCAT(m.title, CASE WHEN m.rating IS NOT NULL THEN
+                        CONCAT(' (', m.rating, ')')
+                    ELSE
+                        ''
+                    END), 'url', CONCAT('https://coryd.dev', m.url), 'description', CASE WHEN m.review IS NOT NULL THEN
+                    m.review
+                ELSE
+                    m.description
+                END, 'image', m.backdrop, 'rating', m.rating, 'date', m.last_watched)
+        ELSE
+            NULL
+        END AS feed
+    FROM
+        optimized_movies m
+)
+SELECT
+    json_agg(feed.* ORDER BY feed.content_date DESC) AS feed
+FROM (
+    SELECT
+        *
+    FROM
+        feed_data
+    WHERE
+        feed IS NOT NULL
+    ORDER BY
+        content_date DESC
+    LIMIT 20) AS feed;
+

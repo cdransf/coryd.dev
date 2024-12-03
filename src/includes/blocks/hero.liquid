@@ -1,0 +1,17 @@
+<img
+  srcset="
+    {{ globals.cdn_url }}{{ image }}?class=bannersm&type=webp 256w,
+    {{ globals.cdn_url }}{{ image }}?class=bannermd&type=webp 512w,
+    {{ globals.cdn_url }}{{ image }}?class=bannerbase&type=webp 1024w
+  "
+  sizes="(max-width: 450px) 256px,
+    (max-width: 850px) 512px
+    1024px"
+  src="{{ globals.cdn_url }}{{ image }}?class=bannersm&type=webp"
+  alt="{{ alt | replaceQuotes }}"
+  class="image-banner"
+  loading="lazy"
+  decoding="async"
+  width="720"
+  height="480"
+/>

@@ -1,0 +1,20 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--spacing-base);
+
+  & a {
+    display: flex;
+
+    &.disabled svg {
+      cursor: not-allowed;
+      stroke: var(--gray-medium);
+      stroke-width: var(--stroke-width-default);
+    }
+  }
+
+  & p {
+    text-align: center;
+  }
+}

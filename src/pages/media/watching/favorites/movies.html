@@ -1,0 +1,26 @@
+---
+title: Favorite movies
+description: These are my favorite movies. There are many like them, but these are mine.
+pagination:
+  data: movies.favorites
+  size: 24
+permalink: "/watching/favorites/movies/{% if pagination.pageNumber > 0 %}{{ pagination.pageNumber }}/{% endif %}index.html"
+schema: favorite-movies
+---
+
+<a href="/watching" class="back-link"
+  >{% tablericon "arrow-left" %} Back to watching</a
+>
+{% if pagination.pageNumber == 0 %}
+<h2 class="page-title">{{ title }}</h2>
+<p>
+  These are my favorite movies. There are many like them, but these are mine.
+</p>
+<hr />
+{% endif %}
+{% render "media/grid.liquid",
+  globals:globals,
+  data:pagination.items,
+  pagination:pagination,
+  shape:"poster"
+%}

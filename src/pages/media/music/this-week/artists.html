@@ -1,0 +1,36 @@
+---
+title: Artists this week
+description: These are the artists I've been listening to this week. All of them are awesome.
+pagination:
+  data: music.week.artists
+  size: 24
+permalink: "/music/this-week/artists/{% if pagination.pageNumber > 0 %}{{ pagination.pageNumber }}/{% endif %}index.html"
+updated: "now"
+image: music.week.artists[0].artist_art
+schema: music-period
+---
+
+{% if pagination.pageNumber == 0 %}
+<h2 class="page-title">Artists this week</h2>
+<p>
+  These are the artists I've been listening to this week. All of them are awesome. Listed in descending order from most plays to least.
+</p>
+<p>
+  <strong class="highlight-text">You can also take a look at</strong> the
+  <a href="/music/this-week/albums">albums I've listened to this week</a>,
+  <a href="/music/this-month/albums">the albums I've listened to this month</a>
+  or
+  <a href="/music/this-month/albums">the artists I've listened to this month</a>.
+</p>
+<p>
+  <a href="/music/concerts">I keep track of the concerts I've been to too</a>.
+</p>
+<hr />
+{% endif %}
+{% render "media/grid.liquid",
+  globals:globals,
+  data:pagination.items,
+  pagination:pagination,
+  shape:"square",
+  count: 16
+%}

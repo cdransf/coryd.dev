@@ -1,0 +1,28 @@
+CREATE OR REPLACE VIEW optimized_listens AS SELECT DISTINCT ON (l.id, l.listened_at, l.track_name, l.artist_name, l.album_name)
+    l.id,
+    l.listened_at,
+    l.track_name,
+    l.artist_name,
+    l.album_name,
+    l.album_key,
+    CONCAT('/', df_art.filename_disk) AS artist_art,
+    a.genres AS artist_genres,
+    g.name AS genre_name,
+    g.slug AS genre_url,
+    a.country AS artist_country,
+    a.slug AS artist_url,
+    CONCAT('/', df_album.filename_disk) AS album_art
+FROM
+    listens l
+    LEFT JOIN artists a ON (l.artist_name = a.name_string)
+    LEFT JOIN albums al ON (l.album_key = al.key)
+    LEFT JOIN directus_files df_art ON (a.art = df_art.id)
+    LEFT JOIN directus_files df_album ON (al.art = df_album.id)
+    LEFT JOIN genres g ON (a.genres = g.id)
+ORDER BY
+    l.id,
+    l.listened_at,
+    l.track_name,
+    l.artist_name,
+    l.album_name;
+

@@ -1,0 +1,43 @@
+CREATE OR REPLACE FUNCTION public.search_optimized_index(search_query text, page_size integer, page_offset integer, types text[])
+    RETURNS TABLE(
+        result_id integer,
+        url text,
+        title text,
+        description text,
+        tags text,
+        genre_name text,
+        genre_url text,
+        type text,
+        total_plays text,
+        rank real,
+        total_count bigint
+    )
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        s.id::integer AS result_id,
+        s.url,
+        s.title,
+        s.description,
+        array_to_string(s.tags, ', ') AS tags,
+        s.genre_name,
+        s.genre_url,
+        s.type,
+        s.total_plays,
+        ts_rank_cd(to_tsvector('english', s.title || ' ' || s.description || array_to_string(s.tags, ' ')), plainto_tsquery('english', search_query)) AS rank,
+        COUNT(*) OVER() AS total_count
+    FROM
+        optimized_search_index s
+    WHERE(types IS NULL
+        OR s.type = ANY(types))
+        AND plainto_tsquery('english', search_query) @@ to_tsvector('english', s.title || ' ' || s.description || array_to_string(s.tags, ' '))
+    ORDER BY
+        s.type = 'post' DESC,
+        s.content_date DESC NULLS LAST,
+        rank DESC
+    LIMIT page_size OFFSET page_offset;
+END;
+$$
+LANGUAGE plpgsql;
+

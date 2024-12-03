@@ -1,0 +1,52 @@
+{% assign media = artists | concat: books | concat: genres | concat: movies | concat: posts | concat: shows %}
+{% if media.size > 0 %}
+  <div class="associated-media">
+    {% assign sections =
+      "artists:headphones:music:Related artist(s)," | append:
+      "books:books:books:Related book(s)," | append:
+      "genres:headphones:music:Related genre(s)," | append:
+      "movies:movie:movies:Related movie(s)," | append:
+      "posts:article:article:Related post(s)," | append:
+      "shows:device-tv-old:tv:Related show(s)"
+    | split: "," %}
+    {% for section in sections %}
+      {% assign parts = section | split: ":" %}
+      {% assign key = parts[0] %}
+      {% assign icon = parts[1] %}
+      {% assign css_class = parts[2] %}
+      {% assign label = parts[3] %}
+      {% case key %}
+        {% when "artists" %} {% assign items = artists %}
+        {% when "books" %} {% assign items = books %}
+        {% when "genres" %} {% assign items = genres %}
+        {% when "movies" %} {% assign items = movies %}
+        {% when "posts" %} {% assign items = posts %}
+        {% when "shows" %} {% assign items = shows %}
+      {% endcase %}
+      {% if items and items.size > 0 %}
+        <p id="{{ key }}" class="{{ css_class }}">
+          {% tablericon icon %}
+          {{ label }}
+        </p>
+        <ul>
+          {% for item in items %}
+            <li>
+              <a href="{{ item.url }}">{{ item.title | default: item.name }}</a>
+              {% if key == "artists" and item.total_plays > 0 %}
+                <strong class="highlight-text">
+                  {{ item.total_plays }} {{ item.total_plays | pluralize: "play" }}
+                </strong>
+              {% elsif key == "books" %}
+                by {{ item.author }}
+              {% elsif key == "movies" or key == "shows" %}
+                ({{ item.year }})
+              {% elsif key == "posts" %}
+                ({{ item.date | date: "%B %e, %Y" }})
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}

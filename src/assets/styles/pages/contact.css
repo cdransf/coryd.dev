@@ -1,0 +1,36 @@
+.contact-wrapper {
+  display: grid;
+  grid-template-columns: var(--grid-columns-one);
+  gap: var(--spacing-base);
+
+  @media screen and (min-width: 768px) {
+    grid-template-columns: var(--grid-columns-two);
+  }
+
+  & .hp,
+  & label > span {
+    display: none;
+  }
+
+  & textarea {
+    height: calc(var(--sizing-3xl) * 5);
+  }
+
+  & .column.description {
+    & p:first-of-type {
+      margin-top: 0;
+    }
+
+    ul {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.contact-success-wrapper {
+  text-align: center;
+
+  & h2 {
+    margin: 0;
+  }
+}

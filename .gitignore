@@ -1,0 +1,17 @@
+# build output
+dist
+node_modules
+.cache
+
+# local dependencies
+.env.local
+.dev.vars
+
+# system files
+.DS_Store
+
+# workers
+wrangler.toml
+.wrangler
+# Local Netlify folder
+.netlify

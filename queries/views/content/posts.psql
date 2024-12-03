@@ -1,0 +1,126 @@
+CREATE OR REPLACE VIEW optimized_posts AS
+SELECT
+  p.id,
+  p.date,
+  p.title,
+  p.description,
+  p.content,
+  p.featured,
+  p.slug AS url,
+  p.mastodon_url,
+  CASE WHEN df.filename_disk IS NOT NULL
+    AND df.filename_disk != ''
+    AND df.filename_disk != '/' THEN
+    CONCAT('/', df.filename_disk)
+  ELSE
+    NULL
+  END AS image,
+  p.image_alt,
+  CASE WHEN EXTRACT(YEAR FROM AGE(CURRENT_DATE, p.date)) > 3 THEN
+    TRUE
+  ELSE
+    FALSE
+  END AS old_post,
+(
+    SELECT
+      json_agg(
+        CASE WHEN pb.collection = 'youtube_player' THEN
+          json_build_object('type', pb.collection, 'url', yp.url)
+        WHEN pb.collection = 'github_banner' THEN
+          json_build_object('type', pb.collection, 'url', gb.url)
+        WHEN pb.collection = 'npm_banner' THEN
+          json_build_object('type', pb.collection, 'url', nb.url, 'command', nb.command)
+        WHEN pb.collection = 'rss_banner' THEN
+          json_build_object('type', pb.collection, 'url', rb.url, 'text', rb.text)
+        WHEN pb.collection = 'hero' THEN
+          json_build_object('type', pb.collection, 'image', CONCAT('/', df_hero.filename_disk), 'alt_text', h.alt_text)
+        WHEN pb.collection = 'markdown' THEN
+          json_build_object('type', pb.collection, 'text', md.text)
+        WHEN pb.collection = 'divider' THEN
+          json_build_object('type', pb.collection, 'markup', d.markup)
+        ELSE
+          json_build_object('type', pb.collection)
+        END)
+    FROM
+      posts_blocks pb
+    LEFT JOIN youtube_player yp ON pb.collection = 'youtube_player'
+      AND yp.id = pb.item::integer
+  LEFT JOIN github_banner gb ON pb.collection = 'github_banner'
+    AND gb.id = pb.item::integer
+  LEFT JOIN npm_banner nb ON pb.collection = 'npm_banner'
+    AND nb.id = pb.item::integer
+  LEFT JOIN rss_banner rb ON pb.collection = 'rss_banner'
+    AND rb.id = pb.item::integer
+  LEFT JOIN hero h ON pb.collection = 'hero'
+    AND h.id = pb.item::integer
+  LEFT JOIN directus_files df_hero ON h.image = df_hero.id
+  LEFT JOIN markdown md ON pb.collection = 'markdown'
+    AND md.id = pb.item::integer
+  LEFT JOIN divider d ON pb.collection = 'divider'
+    AND d.id = pb.item::integer
+WHERE
+  pb.posts_id = p.id) AS blocks,
+(
+  SELECT
+    array_agg(t.name)
+  FROM
+    posts_tags pt
+  LEFT JOIN tags t ON pt.tags_id = t.id
+WHERE
+  pt.posts_id = p.id) AS tags,
+(
+  SELECT
+    json_agg(json_build_object('name', g.name, 'url', g.slug) ORDER BY g.name ASC)
+  FROM
+    posts_genres gp
+  LEFT JOIN genres g ON gp.genres_id = g.id
+WHERE
+  gp.posts_id = p.id) AS genres,
+(
+  SELECT
+    json_agg(json_build_object('name', a.name_string, 'url', a.slug, 'country', a.country, 'total_plays', a.total_plays) ORDER BY a.name_string ASC)
+  FROM
+    posts_artists pa
+  LEFT JOIN artists a ON pa.artists_id = a.id
+WHERE
+  pa.posts_id = p.id) AS artists,
+(
+  SELECT
+    json_agg(json_build_object('title', b.title, 'author', b.author, 'url', b.slug)
+    ORDER BY b.title ASC)
+  FROM
+    posts_books pbk
+  LEFT JOIN books b ON pbk.books_id = b.id
+WHERE
+  pbk.posts_id = p.id) AS books,
+(
+  SELECT
+    json_agg(json_build_object('title', m.title, 'year', m.year, 'url', m.slug)
+    ORDER BY m.year DESC)
+  FROM
+    posts_movies pm
+  LEFT JOIN movies m ON pm.movies_id = m.id
+WHERE
+  pm.posts_id = p.id) AS movies,
+(
+  SELECT
+    json_agg(json_build_object('title', s.title, 'year', s.year, 'url', s.slug) ORDER BY s.year DESC)
+  FROM
+    posts_shows ps
+  LEFT JOIN shows s ON ps.shows_id = s.id
+WHERE
+  ps.posts_id = p.id) AS shows,
+json_build_object('title', p.title, 'url', CONCAT('https://coryd.dev', p.slug), 'description', p.description, 'content', p.content, 'date', p.date, 'image', CASE WHEN df.filename_disk IS NOT NULL
+    AND df.filename_disk != ''
+    AND df.filename_disk != '/' THEN
+    CONCAT('/', df.filename_disk)
+  ELSE
+    NULL
+  END) AS feed
+FROM
+  posts p
+  LEFT JOIN directus_files df ON p.image = df.id
+GROUP BY
+  p.id,
+  df.filename_disk;
+

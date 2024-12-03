@@ -1,0 +1,20 @@
+{%- for block in blocks -%}
+  {%- case block.type -%}
+    {%- when 'youtube_player' -%}
+      {% render "blocks/youtube-player.liquid", url: block.url %}
+    {%- when 'github_banner' -%}
+      {% render "blocks/banners/github.liquid", url: block.url %}
+    {%- when 'npm_banner' -%}
+      {% render "blocks/banners/npm.liquid", url: block.url, command: block.command %}
+    {%- when 'rss_banner' -%}
+      {% render "blocks/banners/rss.liquid", url: block.url, text: block.text %}
+    {%- when 'hero' -%}
+      {% render "blocks/hero.liquid", globals: globals, image: block.image, alt: block.alt %}
+    {%- when 'markdown' -%}
+      {{ block.text | markdown }}
+    {%- when 'divider' -%}
+      {{ block.markup | markdown }}
+    {%- when 'addon_links' -%}
+      {% render "blocks/links/addon-links.liquid", popularPosts:collections.popularPosts, links:links %}
+  {%- endcase -%}
+{%- endfor -%}

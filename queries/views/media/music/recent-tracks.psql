@@ -1,0 +1,23 @@
+CREATE OR REPLACE VIEW recent_tracks AS
+SELECT
+    ol.id,
+    ol.listened_at,
+    ol.track_name,
+    ol.artist_name,
+    ol.album_name,
+    ol.album_key,
+    ol.artist_art,
+    ol.artist_genres,
+    ol.genre_name,
+    ol.artist_country,
+    ol.album_art,
+    ol.artist_url,
+    ol.genre_url,
+    json_build_object('title', ol.track_name, 'subtext', ol.artist_name, 'alt', CONCAT(ol.track_name, ' by ', ol.artist_name), 'url', ol.artist_url, 'image', ol.album_art, 'played_at', ol.listened_at) AS chart
+FROM
+    optimized_listens ol
+WHERE
+    TO_TIMESTAMP(ol.listened_at) >= NOW() - INTERVAL '7 days'
+ORDER BY
+    TO_TIMESTAMP(ol.listened_at) DESC;
+

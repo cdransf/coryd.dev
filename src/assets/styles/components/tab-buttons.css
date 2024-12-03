@@ -1,0 +1,38 @@
+#tracks-recent,
+#tracks-chart,
+.tracks-recent,
+.tracks-chart {
+  display: none;
+}
+
+#tracks-recent:checked ~ .tracks-recent,
+#tracks-chart:checked ~ .tracks-chart {
+  display: block;
+}
+
+input[id="tracks-recent"] ~ .tracks-recent,
+input[id="tracks-chart"] ~ .tracks-chart {
+  margin-top: var(--spacing-base);
+}
+
+[for="tracks-recent"] {
+  margin-right: var(--spacing-lg);
+}
+
+#tracks-recent:checked ~ [for="tracks-recent"],
+#tracks-chart:checked ~ [for="tracks-chart"] {
+  cursor: not-allowed;
+  border-color: var(--accent-color);
+  background-color: var(--accent-color);
+}
+
+#tracks-recent:not(:checked) ~ [for="tracks-recent"],
+#tracks-chart:not(:checked) ~ [for="tracks-chart"] {
+  color: var(--accent-color);
+  background: transparent;
+}
+
+#tracks-recent:not(:checked) ~ [for="tracks-recent"]:is(:hover, :active),
+#tracks-chart:not(:checked) ~ [for="tracks-chart"]:is(:hover, :active) {
+  color: var(--accent-color-hover);
+}

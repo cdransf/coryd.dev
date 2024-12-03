@@ -1,0 +1,109 @@
+CREATE OR REPLACE VIEW optimized_search_index AS
+WITH search_data AS (
+    SELECT
+        'post' AS type,
+        CONCAT('📝 ', p.title) AS title,
+        CONCAT('https://coryd.dev', p.url) AS url,
+        p.description AS description,
+        p.tags,
+        NULL AS genre_name,
+        NULL AS genre_url,
+        NULL::text AS total_plays,
+        p.date AS content_date
+    FROM
+        optimized_posts p
+    UNION ALL
+    SELECT
+        'link' AS type,
+        CONCAT('🔗 ', l.title, ' via ', l.name) AS title,
+        l.link AS url,
+        l.description AS description,
+        l.tags,
+        NULL AS genre_name,
+        NULL AS genre_url,
+        NULL::text AS total_plays,
+        l.date AS content_date
+    FROM
+        optimized_links l
+    UNION ALL
+    SELECT
+        'book' AS type,
+        CASE WHEN b.rating IS NOT NULL THEN
+            CONCAT('📖 ', b.title, ' (', b.rating, ')')
+        ELSE
+            CONCAT('📖 ', b.title)
+        END AS title,
+        CONCAT('https://coryd.dev', b.url) AS url,
+        b.description AS description,
+        b.tags,
+        NULL AS genre_name,
+        NULL AS genre_url,
+        NULL::text AS total_plays,
+        b.date_finished AS content_date
+    FROM
+        optimized_books b
+    WHERE
+        LOWER(b.status) = 'finished'
+    UNION ALL
+    SELECT
+        'artist' AS type,
+        CONCAT(COALESCE(ar.emoji, ar.genre_emoji, '🎧'), ' ', ar.name) AS title,
+        CONCAT('https://coryd.dev', ar.url) AS url,
+        ar.description AS description,
+        ARRAY[ar.genre_name] AS tags,
+        ar.genre_name,
+        CONCAT('https://coryd.dev', ar.genre_slug) AS genre_url,
+        to_char(ar.total_plays::numeric, 'FM999,999,999,999') AS total_plays,
+        NULL AS content_date
+    FROM
+        optimized_artists ar
+    UNION ALL
+    SELECT
+        'genre' AS type,
+        CONCAT(COALESCE(g.emoji, '🎵'), ' ', g.name) AS title,
+        CONCAT('https://coryd.dev', g.url) AS url,
+        g.description AS description,
+        NULL AS tags,
+        g.name AS genre_name,
+        CONCAT('https://coryd.dev', g.url) AS genre_url,
+        NULL::text AS total_plays,
+        NULL AS content_date
+    FROM
+        optimized_genres g
+    UNION ALL
+    SELECT
+        'show' AS type,
+        CONCAT('📺 ', s.title, ' (', s.year, ')') AS title,
+        CONCAT('https://coryd.dev', s.url) AS url,
+        s.description AS description,
+        s.tags,
+        NULL AS genre_name,
+        NULL AS genre_url,
+        NULL::text AS total_plays,
+        s.last_watched_at AS content_date
+    FROM
+        optimized_shows s
+    WHERE
+        s.last_watched_at IS NOT NULL
+    UNION ALL
+    SELECT
+        'movie' AS type,
+        CONCAT('🎬 ', m.title, ' (', m.rating, ')') AS title,
+        CONCAT('https://coryd.dev', m.url) AS url,
+        m.description AS description,
+        m.tags,
+        NULL AS genre_name,
+        NULL AS genre_url,
+        NULL::text AS total_plays,
+        m.last_watched AS content_date
+    FROM
+        optimized_movies m
+    WHERE
+        m.rating IS NOT NULL
+)
+SELECT
+    ROW_NUMBER() OVER (ORDER BY url) AS id,
+    *
+FROM
+    search_data;
+

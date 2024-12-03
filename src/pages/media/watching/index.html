@@ -1,0 +1,48 @@
+---
+title: Currently watching
+description: Here's all of the TV and movies I've been watching presented in what is (hopefully) an organized fashion.
+permalink: "/watching.html"
+updated: "now"
+schema: watching
+---
+
+{%- assign featuredMovie = movies.recentlyWatched | shuffleArray | first -%}
+<h2 class="page-title">{{ title }}</h2>
+{% render "media/watching/hero.liquid", globals:globals, movie:featuredMovie %}
+<p>
+  Here's all of the TV and movies I've been watching presented in what is
+  (hopefully) an organized fashion.
+</p>
+{% render "blocks/banners/rss.liquid", url: "/feeds/movies", text: "Subscribe to
+my movies feed or follow along on this page" %}
+<hr />
+<h3 id="movies">
+  <a href="/watching/recent/movies">
+    {% tablericon "movie" %} Recent movies
+  </a>
+</h3>
+{% render "media/grid.liquid", globals:globals, data:movies.recentlyWatched,
+shape:"vertical", count: 6 %}
+<h3 id="tv">
+  <a href="/watching/recent/shows">
+    {% tablericon "device-tv-old" %} Recent shows
+  </a>
+</h3>
+{% render "media/grid.liquid", globals:globals, data:tv.recentlyWatched,
+shape:"vertical", count: 6 %}
+<h3 id="favorite-movies">
+  <a href="/watching/favorites/movies">
+    {% tablericon "star" %} Favorite movies
+  </a>
+</h3>
+{% assign favoriteMovies = movies.favorites | shuffleArray %} {% render
+"media/grid.liquid", globals:globals, data:favoriteMovies, shape:"vertical",
+count: 6 %}
+<h3 id="favorite-shows">
+  <a href="/watching/favorite/shows">
+    {% tablericon "star" %} Favorite shows
+  </a>
+</h3>
+{% assign favoriteShows = tv.favorites | shuffleArray %} {% render
+"media/grid.liquid", globals:globals, data:favoriteShows, shape:"vertical",
+count: 6 %}

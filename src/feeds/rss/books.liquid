@@ -1,0 +1,11 @@
+---
+layout: null
+eleventyExcludeFromCollections: true
+permalink: "/feeds/books.xml"
+---
+{% render "feeds/rss.liquid"
+  permalink:"/feeds/books.xml"
+  title:"Books feed"
+  globals:globals
+  data:books.feed
+%}

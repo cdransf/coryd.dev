@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="{{ globals.lang }}">
+  <head>
+    <link rel="preload" href="/assets/fonts/ml.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/fonts/mlb.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/assets/styles/index.css?v={% appVersion %}" type="text/css" />
+    {% render "metadata.liquid",
+      schema: schema,
+      page: page,
+      globals:globals,
+      post:post,
+      title:title,
+      description:description,
+      artist:artist,
+      movie:movie,
+      movies:movies,
+      show:show,
+      tv:tv,
+      book:book,
+      books:books,
+      genre:genre,
+      year:year
+    %}
+    <script defer src="/assets/scripts/index.js?v={% appVersion %}"></script>
+    <script defer data-domain="coryd.dev" src="/scripts/util.js"></script>
+    <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+    <noscript>
+      <style>.client-side {display:none}</style>
+    </noscript>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <main>
+        {% render "header.liquid", globals:globals, page:page, nav:nav %}
+        <div class="default-wrapper">
+          {{ content }}
+        </div>
+      </main>
+      {% render "footer.liquid",
+        page:page,
+        nav:nav,
+        updated:updated,
+        pageUpdated:page.updated
+      %}
+    </div>
+  </body>
+</html>

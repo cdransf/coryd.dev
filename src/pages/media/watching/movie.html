@@ -1,0 +1,69 @@
+---
+pagination:
+  data: movies.movies
+  size: 1
+  alias: movie
+permalink: "{{ movie.url }}/index.html"
+schema: movie
+---
+{%- capture alt -%}
+  {{ movie.title }} / {{ movie.year }}{% if move.rating %} ({{ movie.rating }}){% endif %}
+{%- endcapture -%}
+<a class="back-link" href="/watching" title="Go back to the watching index page">{% tablericon "arrow-left" %} Back to watching</a>
+<article class="watching focus">
+  <img
+    srcset="
+      {{ globals.cdn_url }}{{ movie.backdrop }}?class=bannersm&type=webp 256w,
+      {{ globals.cdn_url }}{{ movie.backdrop }}?class=bannermd&type=webp 512w,
+      {{ globals.cdn_url }}{{ movie.backdrop }}?class=bannerbase&type=webp 1024w
+    "
+    sizes="(max-width: 450px) 256px,
+      (max-width: 850px) 512px,
+      1024px"
+    src="{{ globals.cdn_url }}{{ movie.backdrop }}?class=bannersm&type=webp"
+    alt="{{ alt | replaceQuotes }}"
+    class="image-banner"
+    loading="eager"
+    decoding="async"
+    width="256"
+    height="180"
+  />
+  <div class="media-meta">
+    <span class="title"><strong>{{ movie.title }}</strong>{%- if movie.year and not movie.rating %} ({{ movie.year }}){%- endif -%}</span>
+    {%- if movie.rating -%}
+      <span>
+        {{ movie.rating }}
+        {%- if movie.year %}
+          ({{ movie.year }})
+        {%- endif -%}
+      </span>
+    {% endif -%}
+    {%- if movie.favorite -%}
+      <span class="sub-meta favorite">{% tablericon "heart" %} This is one of my favorite movies!</span>
+    {%- endif -%}
+    {%- if movie.tattoo -%}
+      <span class="sub-meta tattoo">{% tablericon "needle" %} I have a tattoo inspired by this movie!</span>
+    {%- endif -%}
+    {%- if movie.collected -%}
+      <span class="sub-meta collected">{% tablericon "circle-check" %} This movie is in my collection!</span>
+    {%- endif -%}
+    {%- if movie.lastWatched -%}<span class="sub-meta">Last watched on {{ movie.lastWatched | date: "%B %e, %Y" }}.</span>{%- endif -%}
+  </div>
+  {% if movie.review %}
+  {% render "blocks/banners/warning.liquid", text: "There are probably spoilers after this banner — this is a warning about them." %}
+  <h2>My thoughts</h2>
+  {{ movie.review | markdown }}
+  {% endif %}
+  {% render "blocks/associated-media.liquid",
+    artists: movie.artists,
+    books: movie.books,
+    genres: movie.genres,
+    movies: movie.related_movies,
+    posts: movie.posts,
+    shows: movie.shows
+  %}
+  {% if movie.description %}
+    <h2>Overview</h2>
+    {{ movie.description | markdown }}
+  {% endif %}
+</article>

@@ -1,0 +1,50 @@
+CREATE OR REPLACE VIEW optimized_genres AS
+SELECT
+    g.id,
+    g.name,
+    g.description,
+    g.emoji,
+    to_char(g.total_plays, 'FM999,999,999,999') AS total_plays,
+    g.wiki_link,
+    g.slug AS url,
+(
+        SELECT
+            json_agg(json_build_object('name', a.name_string, 'url', a.slug, 'image', CONCAT('/', df_artist.filename_disk), 'total_plays', to_char(a.total_plays, 'FM999,999,999,999'))
+            ORDER BY a.total_plays DESC)
+        FROM
+            artists a
+        LEFT JOIN directus_files df_artist ON a.art = df_artist.id
+    WHERE
+        a.genres = g.id) AS artists,
+(
+        SELECT
+            json_agg(json_build_object('title', b.title, 'author', b.author, 'url', b.slug)
+            ORDER BY b.title ASC)
+        FROM
+            books b
+            JOIN genres_books gb ON gb.books_id = b.id
+        WHERE
+            gb.genres_id = g.id) AS books,
+(
+            SELECT
+                json_agg(json_build_object('title', m.title, 'year', m.year, 'url', m.slug)
+                ORDER BY m.year DESC)
+            FROM
+                movies m
+                JOIN genres_movies gm ON gm.movies_id = m.id
+            WHERE
+                gm.genres_id = g.id) AS movies,
+(
+                SELECT
+                    json_agg(json_build_object('title', p.title, 'date', p.date, 'url', p.slug)
+                    ORDER BY p.date DESC)
+                FROM
+                    posts_genres pg
+                LEFT JOIN posts p ON pg.posts_id = p.id
+            WHERE
+                pg.genres_id = g.id) AS posts
+        FROM
+            genres g
+        ORDER BY
+            g.id ASC;
+

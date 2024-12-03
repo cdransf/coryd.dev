@@ -1,0 +1,90 @@
+:is(.book-entry, .book-focus) .progress-bar-wrapper {
+  --progress-bar-width: 50%;
+
+  @media screen and (min-width: 768px) {
+    --progress-bar-width: 75%;
+  }
+}
+
+:is(.book-entry, .book-focus) img {
+  height: auto;
+  aspect-ratio: var(--aspect-ratio-vertical);
+}
+
+.book-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+
+  &:not(:last-of-type) {
+    padding-bottom: var(--spacing-base);
+    border-bottom: var(--border-gray);
+  }
+
+  @media screen and (min-width: 768px) {
+    flex-direction: row;
+    gap: var(--spacing-base);
+    align-items: start;
+  }
+
+  & img {
+    max-width: calc(var(--sizing-3xl) * 4);
+  }
+
+  & .media-meta {
+    margin-top: var(--sizing-base);
+    align-items: center;
+
+    @media screen and (min-width: 768px) {
+      margin-top: 0;
+      align-items: start;
+    }
+
+    & .description p:last-of-type {
+      margin-bottom: 0;
+    }
+
+    & .progress-bar-wrapper {
+      max-width: var(--progress-bar-width);
+      margin-bottom: 0;
+
+      @media screen and (min-width: 768px) {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+.book-focus {
+  & .book-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-base);
+    margin-bottom: var(--spacing-base);
+
+    @media screen and (min-width: 768px) {
+      flex-direction: row;
+      align-items: start;
+    }
+
+    & img {
+      border: var(--border-default);
+    }
+
+    & .media-meta {
+      width: 100%;
+      align-items: center;
+
+      @media screen and (min-width: 768px) {
+        width: auto;
+        align-items: start;
+      }
+
+      & .progress-bar-wrapper {
+        max-width: var(--progress-bar-width);
+      }
+    }
+  }
+}

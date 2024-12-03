@@ -1,0 +1,22 @@
+{%- assign updateTime = "" -%}
+{%- if updated == "now" -%}
+  {%- assign updateTime = 'now' | date: "%B %-d, %l:%M %P", "America/Los_Angeles" -%}
+{%- elsif pageUpdated -%}
+  {%- assign updateTime = page.updated | date: "%B %-d, %l:%M %P", "America/Los_Angeles" -%}
+{%- endif -%}
+<footer{% unless updateTime %} style="margin-top:var(--spacing-3xl)"{% endunless %}>
+  {%- if updateTime -%}
+    <p class="updated"><em>This page was last updated on {{ updateTime | strip }}.</em></p>
+  {%- endif -%}
+  <nav aria-label="Social icons" class="social">
+    {%- for link in nav.footer_icons -%}
+      {% render "nav/link.liquid", page:page, link:link %}
+    {%- endfor -%}
+  </nav>
+  <nav aria-label="Secondary site navigation" class="sub-pages">
+    {%- for link in nav.footer_text -%}
+      {% render "nav/link.liquid", page:page, link:link %}
+      {% unless forloop.last %}<span>/</span>{% endunless %}
+    {%- endfor -%}
+  </nav>
+</footer>

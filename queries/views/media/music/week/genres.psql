@@ -1,0 +1,16 @@
+CREATE OR REPLACE VIEW week_genres AS
+SELECT
+    ol.genre_name,
+    ol.genre_url,
+    COUNT(*) AS plays,
+    json_build_object('alt', ol.genre_name, 'subtext', CONCAT(COUNT(*), ' plays')) AS grid
+FROM
+    optimized_listens ol
+WHERE
+    TO_TIMESTAMP(ol.listened_at) >= NOW() - INTERVAL '7 days'
+GROUP BY
+    ol.genre_name,
+    ol.genre_url
+ORDER BY
+    plays DESC;
+

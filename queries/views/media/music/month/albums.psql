@@ -1,0 +1,20 @@
+CREATE OR REPLACE VIEW month_albums AS
+SELECT
+    ol.album_name,
+    ol.artist_name,
+    COUNT(*) AS plays,
+    ol.album_art,
+    ol.artist_url,
+    json_build_object('title', ol.album_name, 'image', ol.album_art, 'url', ol.artist_url, 'alt', CONCAT(ol.album_name, ' by ', ol.artist_name), 'subtext', ol.artist_name) AS grid
+FROM
+    optimized_listens ol
+WHERE
+    TO_TIMESTAMP(ol.listened_at) >= NOW() - INTERVAL '30 days'
+GROUP BY
+    ol.album_name,
+    ol.artist_name,
+    ol.album_art,
+    ol.artist_url
+ORDER BY
+    plays DESC;
+

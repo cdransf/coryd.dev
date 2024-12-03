@@ -1,0 +1,14 @@
+.addon-links {
+  display: grid;
+  gap: var(--sizing-base);
+  grid-template-columns: var(--grid-columns-one);
+
+  @media screen and (min-width: 768px) {
+    grid-template-columns: var(--grid-columns-two);
+  }
+
+  & article {
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
+}

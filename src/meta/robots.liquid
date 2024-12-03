@@ -1,0 +1,14 @@
+---
+permalink: "/robots.txt"
+layout: null
+eleventyExcludeFromCollections: true
+---
+Sitemap: https://coryd.dev/sitemap.xml
+
+User-agent: *
+Disallow:
+
+{% for robot in robots -%}
+User-agent: {{ robot }}
+{% endfor -%}
+Disallow: /

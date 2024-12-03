@@ -1,0 +1,11 @@
+---
+layout: null
+eleventyExcludeFromCollections: true
+permalink: "/feeds/all.xml"
+---
+{% render "feeds/rss.liquid"
+  permalink:"/feeds/all.xml"
+  title:"All activity feed"
+  globals:globals
+  data:activity
+%}

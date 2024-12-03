@@ -1,0 +1,28 @@
+@import url("./tab-buttons.css");
+@import url("./text-toggle.css");
+
+button,
+.button {
+  appearance: none;
+  border: none;
+  border: 2px solid var(--accent-color);
+  border-radius: var(--border-radius-full);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-base);
+  white-space: nowrap;
+  color: var(--text-color-inverted);
+  background-color: var(--accent-color);
+  transition: color var(--transition-duration-default)
+    var(--transition-ease-in-out);
+
+  &:not(.active):is(:hover, :active, :focus, :focus-within) {
+    background-color: var(--accent-color-hover);
+    border: 2px solid var(--accent-color-hover);
+    transition: background-color var(--transition-duration-default)
+        var(--transition-ease-in-out),
+      border var(--transition-duration-default) var(--transition-ease-in-out),
+      color var(--transition-duration-default) var(--transition-ease-in-out);
+  }
+}

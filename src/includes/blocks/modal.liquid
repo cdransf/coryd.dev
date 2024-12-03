@@ -1,0 +1,18 @@
+{%- capture labelContent -%}
+  {%- if icon -%}
+    {% tablericon icon %}
+  {%- elsif label -%}
+    {{ label }}
+  {%- endif -%}
+{%- endcapture -%}
+{% assign modalId = id | default: "modal-controls" %}
+<input class="modal-input" id="{{ id }}" type="checkbox" tabindex="0" />
+<label class="modal-toggle" for="{{ id }}">{{ labelContent }}</label>
+<div class="modal-wrapper">
+  <div class="modal-body">
+    <label class="modal-close" for="{{ id }}">
+      {% tablericon "circle-x" %}
+    </label>
+    {{ content }}
+  </div>
+</div>

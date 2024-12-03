@@ -1,0 +1,35 @@
+.artist-focus {
+  & img {
+    border: var(--border-default);
+    aspect-ratio: var(--aspect-ratio-square);
+    width: 100%;
+    height: auto;
+
+    @media screen and (min-width: 768px) {
+      max-width: calc(var(--sizing-3xl) * 6.75);
+    }
+  }
+
+  & .artist-display {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-base);
+
+    @media screen and (min-width: 768px) {
+      flex-direction: row;
+      gap: var(--spacing-md);
+    }
+
+    @media screen and (max-width: 768px) {
+      & .media-meta {
+        margin-top: var(--spacing-base);
+      }
+    }
+  }
+
+  & table + p {
+    font-size: var(--font-size-sm);
+    margin: var(--spacing-base) 0 0;
+  }
+}

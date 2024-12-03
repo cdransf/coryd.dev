@@ -1,0 +1,8 @@
+<div class="addon-links">
+  {%- if popularPosts.size > 0 -%}
+    {% render "blocks/links/popular-posts.liquid", popularPosts:popularPosts %}
+  {%- endif -%}
+  {%- if links.size > 0 -%}
+    {% render "blocks/links/recent-links.liquid", links:links %}
+  {%- endif -%}
+</div>

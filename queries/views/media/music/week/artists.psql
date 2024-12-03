@@ -1,0 +1,19 @@
+CREATE OR REPLACE VIEW week_artists AS
+SELECT
+    ol.artist_name,
+    COUNT(*) AS plays,
+    ol.artist_art,
+    ol.artist_url,
+    ARRAY_AGG(DISTINCT ol.genre_name) AS genres,
+    json_build_object('title', ol.artist_name, 'image', ol.artist_art, 'url', ol.artist_url, 'alt', CONCAT(COUNT(*), ' plays of ', ol.artist_name), 'subtext', CONCAT(COUNT(*), ' plays')) AS grid
+FROM
+    optimized_listens ol
+WHERE
+    TO_TIMESTAMP(ol.listened_at) >= NOW() - INTERVAL '7 days'
+GROUP BY
+    ol.artist_name,
+    ol.artist_art,
+    ol.artist_url
+ORDER BY
+    plays DESC;
+

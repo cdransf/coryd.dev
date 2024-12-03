@@ -1,0 +1,20 @@
+{%- assign currentYear = 'now' | date: "%Y" -%}
+{%- assign artist = music.week.artists | first -%}
+{%- assign track = music.week.tracks | first -%}
+{%- assign show = tv.recentlyWatched | first -%}
+{%- assign movie = movies.recentlyWatched | first -%}
+{%- assign book = books | first -%}
+{%- assign link = links | first -%}
+<article>
+  <h2>
+    {% tablericon "activity" %}
+    Recent activity
+  </h2>
+  <p><span class="music">Top artist this week:</span> <a href="{{ artist.artist_url }}">{{ artist.artist_name }}</a> with <strong class="highlight-text">{{ artist.plays }} plays</strong></p>
+  <p><span class="music">Top track this week:</span> {{ track.track_name }} by <a href="{{ track.artist_url }}">{{ track.artist_name }}</a></p>
+  <p><span class="tv">Last episode watched:</span> <strong class="highlight-text">{{ show.formatted_episode }}</strong> of <a href="{{ show.url }}">{{ show.title }}</a></p>
+  <p><span class="movies">Last movie watched:</span> <a href="{{ movie.url }}">{{ movie.title }}</a>{%- if movie.rating %} ({{ movie.rating }}){%- endif -%}</p>
+  <p><span class="books">Last book finished:</span> <a href="{{ book.url }}">{{ book.title }}</a> by {{ book.author }}{%- if book.rating %} ({{ book.rating }}){%- endif -%}</p>
+  <p><span class="link">Last link shared:</span> <a href="{{ link.link }}">{{ link.title }}</a>{% if link.author %} via <a href="{{ link.author.url }}">{{ link.author.name }}</a>{% endif %}</p>
+  {% render "blocks/banners/rss.liquid", url: "/feeds", text: "Subscribe to my movies, books, links or activity feed(s)" %}
+</article>

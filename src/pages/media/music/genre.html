@@ -1,0 +1,41 @@
+---
+pagination:
+  data: genres
+  size: 1
+  alias: genre
+permalink: "{{ genre.url }}/index.html"
+updated: "now"
+schema: genre
+---
+{% assign artistCount = genre.artists.size %}
+{%- capture connectingWords -%}
+  {% if artistCount > 1 %}
+    artists are
+  {% else %}
+    artist is
+  {% endif %}
+{%- endcapture -%}
+{%- assign mediaLinks = genre.artists | mediaLinks: "artist", 5 -%}
+<noscript><style>[data-toggle-content].text-toggle-hidden {height: unset !important;overflow: unset !important;margin-bottom: unset !important;}[data-toggle-content].text-toggle-hidden::after {display: none !important;}</style></noscript>
+<a class="back-link" href="/music" title="Go back to the music index page">{% tablericon "arrow-left" %} Back to music</a>
+<h2>{{ genre.emoji }} {{ genre.name }}</h2>
+<article class="genre-focus">
+  {%- if mediaLinks -%}
+    <p>My top <strong class="highlight-text">{{ genre.name }}</strong> {{ connectingWords }} {{ mediaLinks }}. I've listened to <strong class="highlight-text">{{ genre.total_plays }}</strong> tracks form this genre.</p>
+    <hr />
+  {%- endif -%}
+  {% render "blocks/associated-media.liquid",
+    books: genre.books,
+    movies: genre.movies,
+    posts: genre.posts,
+  %}
+  {%- if genre.description -%}
+    <h3>Overview</h3>
+    <div data-toggle-content class="text-toggle-hidden">
+      {{ genre.description | markdown }}
+      <p><a href="{{ genre.wiki_link }}">Continue reading at Wikipedia.</a></p>
+      <p><em>Wikipedia content provided under the terms of the <a href="https://creativecommons.org/licenses/by-sa/3.0/">Creative Commons BY-SA license</a></em></p>
+    </div>
+    <button data-toggle-button>Show more</button>
+  {%- endif -%}
+</article>

@@ -1,0 +1,6 @@
+---
+permalink: /
+---
+{% render "home/intro.liquid" intro:globals.intro, nowPlaying:nowPlaying.content %}
+{% render "home/recent-activity.liquid" music:music, books:books.currentYear, tv:tv, movies:movies, links:links %}
+{% render "home/recent-posts.liquid" posts:posts %}

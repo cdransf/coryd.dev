@@ -1,0 +1,15 @@
+.link-grid {
+  display: grid;
+  gap: var(--spacing-sm);
+  grid-template-columns: var(--grid-columns-one);
+
+  @media screen and (min-width: 768px) {
+    grid-template-columns: var(--grid-columns-two);
+  }
+
+  & .link-box {
+    border: var(--border-gray);
+    border-radius: var(--border-radius-slight);
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}

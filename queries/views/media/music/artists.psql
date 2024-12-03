@@ -1,0 +1,94 @@
+CREATE OR REPLACE VIEW optimized_artists AS
+SELECT
+    ar.name_string AS name,
+    ar.slug AS url,
+    ar.tentative,
+    to_char(ar.total_plays, 'FM999,999,999,999') AS total_plays,
+    ar.country,
+    ar.description,
+    ar.favorite,
+    g.name AS genre_name,
+    g.slug AS genre_slug,
+    g.emoji AS genre_emoji,
+    json_build_object('name', g.name, 'url', g.slug, 'emoji', g.emoji) AS genre,
+    ar.emoji,
+    ar.tattoo,
+    CONCAT('/', df.filename_disk) AS image,
+    json_build_object('alt', CONCAT(to_char(ar.total_plays, 'FM999,999,999,999'), ' plays of ', ar.name_string),
+        'subtext', CONCAT(to_char(ar.total_plays, 'FM999,999,999,999'), ' plays')
+) AS grid,
+(
+        SELECT
+            json_agg(json_build_object('name', a.name, 'release_year', a.release_year, 'total_plays', to_char(a.total_plays, 'FM999,999,999,999'),
+                    'art', df_album.filename_disk)
+            ORDER BY a.release_year)
+        FROM
+            albums a
+        LEFT JOIN directus_files df_album ON a.art = df_album.id
+    WHERE
+        a.artist = ar.id) AS albums,
+(
+        SELECT
+            json_agg(json_build_object('id', c.id, 'date', c.date, 'venue_name', v.name, 'venue_name_short', trim(split_part(v.name, ',', 1)), 'venue_latitude', v.latitude, 'venue_longitude', v.longitude, 'notes', c.notes)
+            ORDER BY c.date DESC)
+        FROM
+            concerts c
+        LEFT JOIN venues v ON c.venue = v.id
+    WHERE
+        c.artist = ar.id) AS concerts,
+(
+        SELECT
+            json_agg(json_build_object('title', b.title, 'author', b.author, 'url', b.slug)
+            ORDER BY b.title ASC)
+        FROM
+            books_artists ba
+        LEFT JOIN books b ON ba.books_id = b.id
+    WHERE
+        ba.artists_id = ar.id) AS books,
+(
+        SELECT
+            json_agg(json_build_object('title', m.title, 'year', m.year, 'url', m.slug)
+            ORDER BY m.year DESC)
+        FROM
+            movies_artists ma
+        LEFT JOIN movies m ON ma.movies_id = m.id
+    WHERE
+        ma.artists_id = ar.id) AS movies,
+(
+        SELECT
+            json_agg(json_build_object('title', s.title, 'year', s.year, 'url', s.slug)
+            ORDER BY s.year DESC)
+        FROM
+            shows_artists sa
+        LEFT JOIN shows s ON sa.shows_id = s.id
+    WHERE
+        sa.artists_id = ar.id) AS shows,
+(
+        SELECT
+            json_agg(json_build_object('title', p.title, 'date', p.date, 'url', p.slug)
+            ORDER BY p.date DESC)
+        FROM
+            posts_artists pa
+        LEFT JOIN posts p ON pa.posts_id = p.id
+    WHERE
+        pa.artists_id = ar.id) AS posts,
+(
+        SELECT
+            json_agg(json_build_object('name', related_ar.name_string, 'url', related_ar.slug, 'country', related_ar.country, 'total_plays', to_char(related_ar.total_plays, 'FM999,999,999,999'))
+            ORDER BY related_ar.name_string)
+        FROM
+            related_artists ra
+        LEFT JOIN artists related_ar ON ra.related_artists_id = related_ar.id
+    WHERE
+        ra.artists_id = ar.id) AS related_artists
+FROM
+    artists ar
+    LEFT JOIN directus_files df ON ar.art = df.id
+    LEFT JOIN genres g ON ar.genres = g.id
+GROUP BY
+    ar.id,
+    df.filename_disk,
+    g.name,
+    g.slug,
+    g.emoji;
+

@@ -1,0 +1,94 @@
+CREATE OR REPLACE VIEW optimized_shows AS
+SELECT
+  s.id,
+  s.title,
+  s.year,
+  s.collected,
+  s.favorite,
+  s.tattoo,
+  s.description,
+  s.review,
+  s.slug AS url,
+  CONCAT('/', df_art.filename_disk) AS image,
+  CONCAT('/', df_backdrop.filename_disk) AS backdrop,
+  json_build_object('title', s.title, 'image', CONCAT('/', df_art.filename_disk), 'backdrop', CONCAT('/', df_backdrop.filename_disk), 'url', s.slug, 'alt', CONCAT('Poster from ', s.title, ' (', s.year, ')'), 'subtext', COALESCE((
+      SELECT
+        CASE WHEN e1.last_watched_at >= NOW() - INTERVAL '90 days' THEN
+          CONCAT('S', e1.season_number, 'E', e1.episode_number)
+        ELSE
+          CONCAT('(', s.year::text, ')')
+        END FROM episodes e1
+        WHERE
+          e1.show = s.id ORDER BY e1.last_watched_at DESC, e1.season_number DESC, e1.episode_number DESC LIMIT 1), CONCAT('(', s.year::text, ')'))) AS grid,
+  json_build_object('title', s.title, 'year', s.year, 'url', s.slug, 'image', CONCAT('/', df_art.filename_disk), 'backdrop', CONCAT('/', df_backdrop.filename_disk), 'formatted_episode', COALESCE((
+      SELECT
+        CONCAT('S', e2.season_number, 'E', e2.episode_number)
+      FROM episodes e2
+      WHERE
+        e2.show = s.id ORDER BY e2.season_number DESC, e2.episode_number DESC LIMIT 1)), 'last_watched_at', MAX(e.last_watched_at)) AS episode,
+(
+    SELECT
+      json_agg(json_build_object('title', m.title, 'year', m.year, 'url', m.slug)
+      ORDER BY m.year DESC)
+    FROM
+      shows_movies sm
+    LEFT JOIN movies m ON sm.movies_id = m.id
+  WHERE
+    sm.shows_id = s.id) AS movies,
+(
+    SELECT
+      json_agg(json_build_object('title', b.title, 'author', b.author, 'url', b.slug)
+      ORDER BY b.title ASC)
+    FROM
+      shows_books sb
+    LEFT JOIN books b ON sb.books_id = b.id
+  WHERE
+    sb.shows_id = s.id) AS books,
+(
+    SELECT
+      json_agg(json_build_object('title', p.title, 'date', p.date, 'url', p.slug)
+      ORDER BY p.date DESC)
+    FROM
+      posts_shows ps
+    LEFT JOIN posts p ON ps.posts_id = p.id
+  WHERE
+    ps.shows_id = s.id) AS posts,
+(
+    SELECT
+      array_agg(t.name)
+    FROM
+      shows_tags st
+    LEFT JOIN tags t ON st.tags_id = t.id
+  WHERE
+    st.shows_id = s.id) AS tags,
+(
+    SELECT
+      json_agg(json_build_object('title', rs.title, 'year', rs.year, 'url', rs.slug)
+      ORDER BY rs.year DESC)
+    FROM
+      related_shows sr
+    LEFT JOIN shows rs ON sr.related_shows_id = rs.id
+  WHERE
+    sr.shows_id = s.id) AS related_shows,
+(
+    SELECT
+      json_agg(json_build_object('name', a.name_string, 'url', a.slug, 'country', a.country, 'total_plays', a.total_plays)
+      ORDER BY a.name_string ASC)
+    FROM
+      shows_artists sa
+    LEFT JOIN artists a ON sa.artists_id = a.id
+  WHERE
+    sa.shows_id = s.id) AS artists,
+  MAX(e.last_watched_at) AS last_watched_at
+FROM
+  shows s
+  LEFT JOIN episodes e ON s.id = e.show
+  LEFT JOIN directus_files df_art ON s.art = df_art.id
+  LEFT JOIN directus_files df_backdrop ON s.backdrop = df_backdrop.id
+GROUP BY
+  s.id,
+  df_art.filename_disk,
+  df_backdrop.filename_disk
+ORDER BY
+  MAX(e.last_watched_at) DESC;
+

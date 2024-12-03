@@ -1,0 +1,20 @@
+{%- if links.size > 0 -%}
+  <article>
+    <h3>
+      <a class="link" href="/links">
+        {% tablericon "link" "Links" %}
+        Recent links
+      </a>
+    </h3>
+    <ul>
+      {%- for link in links limit: 5 -%}
+      <li>
+        <a href="{{ link.link }}" title="{{ link.title | escape }}">
+          {{ link.title }}
+        </a>
+        {% if link.author %} via <a href="{{ link.author.url }}">{{ link.author.name }}</a>{% endif %}
+      </li>
+      {%- endfor -%}
+    </ul>
+  </article>
+{%- endif -%}

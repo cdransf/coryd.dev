@@ -1,0 +1,51 @@
+{%- assign pageCount = pagination.pages.size | default: 0 -%}
+{%- assign hidePagination = pageCount <= 1 -%}
+<div class="media-grid {{ shape }}">
+  {%- assign loadingStrategy = loading | default: 'lazy' -%}
+  {%- for item in data limit: count -%}
+    {%- assign alt = item.grid.alt | replaceQuotes -%}
+    {%- assign imageUrl = item.grid.image -%}
+    <a href="{{ item.grid.url }}" title="{{ alt }}">
+      <div class="item media-overlay">
+        <div class="meta-text">
+          <div class="header">{{ item.grid.title }}</div>
+          <div class="subheader">{{ item.grid.subtext }}</div>
+        </div>
+        {%- assign imageClass = '' -%}
+        {%- assign width = 0 -%}
+        {%- assign height = 0 -%}
+        {%- case shape -%}
+          {%- when 'poster' -%}
+            {%- assign imageUrl = item.grid.backdrop -%}
+            {%- assign imageClass = 'banner' -%}
+            {%- assign width = 256 -%}
+            {%- assign height = 170 -%}
+          {%- when 'square' -%}
+            {%- assign imageClass = 'square' -%}
+            {%- assign width = 200 -%}
+            {%- assign height = 200 -%}
+          {%- when 'vertical' -%}
+            {%- assign imageClass = 'vertical' -%}
+            {%- assign width = 200 -%}
+            {%- assign height = 307 -%}
+        {%- endcase -%}
+        <img
+          srcset="
+            {{ globals.cdn_url }}{{ imageUrl }}?class={{ imageClass }}sm&type=webp {{ width }}w,
+            {{ globals.cdn_url }}{{ imageUrl }}?class={{ imageClass }}md&type=webp {{ width | times: 2 }}w
+          "
+          sizes="(max-width: 450px) {{ width }}px, {{ width | times: 2 }}px"
+          src="{{ globals.cdn_url }}{{ imageUrl }}?class={{ imageClass }}sm&type=webp"
+          alt="{{ alt }}"
+          loading="{{ loadingStrategy }}"
+          decoding="async"
+          width="{{ width }}"
+          height="{{ height }}"
+        />
+      </div>
+    </a>
+  {%- endfor -%}
+</div>
+{%- unless hidePagination -%}
+  {% render "nav/paginator.liquid", pagination: pagination %}
+{%- endunless -%}

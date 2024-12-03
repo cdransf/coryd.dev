@@ -1,0 +1,21 @@
+.avatar-wrapper {
+  --avatar-size: 16rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  @media screen and (min-width: 768px) {
+    --avatar-size: 24rem;
+  }
+
+  & img {
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    image-rendering: pixelated;
+  }
+}
+
+.about-title {
+  margin: var(--margin-vertical-base-horizontal-zero);
+  text-align: center;
+}

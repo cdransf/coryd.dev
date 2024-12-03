@@ -1,0 +1,49 @@
+---
+title: Currently reading
+description: Here's what I'm reading at the moment.
+permalink: "/books.html"
+updated: "now"
+schema: books
+---
+{%- assign currentYear = 'now' | date: "%Y" -%}
+{%- assign bookData = books.all | filterBooksByStatus: 'started' | reverse -%}
+{%- assign currentBookCount = books.currentYear | size -%}
+<h2 class="page-title">Currently reading</h2>
+<p>Here's what I'm reading at the moment. I've finished <strong class="highlight-text">{{ currentBookCount }} books</strong> this year.</p>
+<p>{{ books.years | bookYearLinks }}</p>
+{% render "blocks/banners/rss.liquid", url: "/feeds/books", text: "Subscribe to my books feed or follow along on this page" %}
+<hr />
+{% for book in bookData %}
+  {% capture alt %}{{ book.title }} by {{ book.authors }}{% endcapture %}
+  <article class="book-entry">
+    <a href="{{ book.url }}">
+      <img
+        srcset="
+          {{ globals.cdn_url }}{{ book.image }}?class=verticalsm&type=webp 200w,
+          {{ globals.cdn_url }}{{ book.image }}?class=verticalmd&type=webp 400w
+        "
+        sizes="(max-width: 450px) 200px,
+          400px"
+        src="{{ globals.cdn_url }}{{ book.image }}?class=verticalsm&type=webp"
+        alt="{{ alt | replaceQuotes }}"
+        loading="lazy"
+        decoding="async"
+        width="200"
+        height="307"
+      />
+    </a>
+    <div class="media-meta">
+      <a href="{{ book.url }}">
+        <span class="title"><strong>{{ book.title }}</strong></span>
+      </a>
+      {% if book.author %}
+        <span class="sub-meta">By {{ book.author }}</span>
+      {% endif %}
+      {% if book.progress %}
+        {%- assign percentage = book.progress | append: '%' -%}
+        {% render "media/progress-bar.liquid", percentage:percentage %}
+      {% endif %}
+      {% if book.description %}<div class="description">{{ book.description | normalize_whitespace | markdown | htmlTruncate }}</div>{% endif %}
+    </div>
+  </article>
+{% endfor %}
