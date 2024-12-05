@@ -82,10 +82,10 @@ description: Search through posts and other content on my site.
 </button>
 <script src="assets/scripts/components/minisearch.js"></script>
 <script>
-  import { sanitizeContent, htmlTruncate, md } from "@utils/helpers/general.js";
-
   window.addEventListener("load", () => {
     (() => {
+      if (typeof MiniSearch === "undefined") return;
+
       const miniSearch = new MiniSearch({
         fields: ["title", "description", "tags", "type"],
         idField: "id",
@@ -110,6 +110,7 @@ description: Search through posts and other content on my site.
       const $fallback = document.querySelector(".search__form--fallback");
       const $input = document.querySelector(".search__form--input");
       const $results = document.querySelector(".search__results");
+      const $addonLinks = document.querySelector(".addon-links");
       const $loadMoreButton = document.querySelector(".search__load-more");
       const $typeCheckboxes = document.querySelectorAll(
         '.search__form--type input[type="checkbox"]',
@@ -125,27 +126,49 @@ description: Search through posts and other content on my site.
       let total = 0;
       let debounceTimeout;
 
+      const parseMarkdown = (markdown) =>
+        markdown
+          ? markdown
+              .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+              .replace(/\*(.*?)\*/g, "<em>$1</em>")
+              .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+              .replace(/\n/g, "<br>")
+              .replace(/[#*_~`]/g, "")
+          : "";
+
+      const truncateDescription = (markdown, maxLength = 150) => {
+        const plainText =
+          new DOMParser().parseFromString(parseMarkdown(markdown), "text/html")
+            .body.textContent || "";
+        return plainText.length > maxLength
+          ? `${plainText.substring(0, maxLength)}...`
+          : plainText;
+      };
+
       const renderSearchResults = (results) => {
         const resultHTML = results
           .map(
             ({ title, url, description, type, total_plays }) => `
-          <li class="search__results--result">
-            <h3>
-              <a href="${url}">${title}</a>
-              ${` <strong class="highlight-text">${total_plays} plays</strong>`}
-            </h3>
-            <p>${htmlTruncate(sanitizeContent(md(description)))}</p>
-          </li>
-        `
+            <li class="search__results--result">
+                <h3>
+                  <a href="${url}">${title}</a>
+                  ${
+                    type === "artist" && total_plays > 0
+                      ? ` <strong class="highlight-text">${total_plays} plays</strong>`
+                      : ""
+                  }
+                </h3>
+              <p>${truncateDescription(description)}</p>
+            </li>
+          `,
           )
           .join("");
 
-        const noResultsHTML = `
-          <li class="search__results--no-results">No results found.</li>
-        `;
-
-        $results.innerHTML = results.length ? resultHTML : noResultsHTML;
+        $results.innerHTML =
+          resultHTML ||
+          '<li class="search__results--no-results">No results found.</li>';
         $results.style.display = "block";
+        $addonLinks.style.display = results.length === 0 ? "grid" : "none";
       };
 
       const loadSearchIndex = async (query, types, page) => {
@@ -189,14 +212,18 @@ description: Search through posts and other content on my site.
         const newResultsHTML = results
           .map(
             ({ title, url, description, type, total_plays }) => `
-          <li class="search__results--result">
-            <h3>
-              <a href="${url}">${title}</a>
-              ${` <strong class="highlight-text">${total_plays} plays</strong>`}
-            </h3>
-            <p>${htmlTruncate(sanitizeContent(md(description)))}</p>
-          </li>
-        `,
+            <li class="search__results--result">
+              <h3>
+                <a href="${url}">${title}</a>
+                ${
+                  type === "artist" && total_plays > 0
+                    ? ` <strong class="highlight-text">${total_plays} plays</strong>`
+                    : ""
+                }
+              </h3>
+              <p>${truncateDescription(description)}</p>
+            </li>
+          `,
           )
           .join("");
         $results.insertAdjacentHTML("beforeend", newResultsHTML);
@@ -207,6 +234,7 @@ description: Search through posts and other content on my site.
         if (!query) {
           renderSearchResults([]);
           $loadMoreButton.style.display = "none";
+          $addonLinks.style.display = "grid";
           return;
         }
 
@@ -218,7 +246,7 @@ description: Search through posts and other content on my site.
 
       $input.addEventListener("input", () => {
         clearTimeout(debounceTimeout);
-        debounceTimeout = setTimeout(handleSearch, 200);
+        debounceTimeout = setTimeout(handleSearch, 300);
       });
 
       $typeCheckboxes.forEach((cb) =>
@@ -235,6 +263,8 @@ description: Search through posts and other content on my site.
         currentResults = [...currentResults, ...nextResults];
         updateSearchResults(nextResults);
       });
+
+      $addonLinks.style.display = "grid";
     })();
   });
 </script>
