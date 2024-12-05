@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import ics from "ics";
 import { staticSitemapPages } from "../constants.js";
 
@@ -31,24 +30,22 @@ export const albumReleasesCalendar = (collection) => {
   const {
     albumReleases: { all },
   } = data;
+
   if (!all || all.length === 0) return "";
 
   const events = all
     .map((album) => {
-      const date = DateTime.fromISO(album["release_date"]);
-      if (!date.isValid) return null;
+      const date = new Date(album["release_date"]);
+      if (isNaN(date.getTime())) return null;
 
       return {
-        start: [date.year, date.month, date.day],
+        start: [date.getFullYear(), date.getMonth() + 1, date.getDate()],
         startInputType: "local",
         startOutputType: "local",
         title: `Release: ${album["artist"]["name"]} - ${album["title"]}`,
         description: `Check out this new album release: ${album["url"]}. Read more about ${album["artist"]["name"]} at https://coryd.dev${album["artist"]["url"]}`,
         url: album["url"],
-        uid: `${date.toFormat("yyyyMMdd")}-${album["artist"]["name"]}-${
-          album["title"]
-        }@coryd.dev`,
-        timestamp: DateTime.now().toUTC().toFormat("yyyyMMdd'T'HHmmss'Z'"),
+        uid: `${album["release_timestamp"]}-${album["artist"]["name"]}-${album["title"]}`,
       };
     })
     .filter((event) => event !== null);

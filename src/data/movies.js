@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import { DateTime } from "luxon";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
@@ -34,13 +33,19 @@ export default async function () {
   try {
     const movies = await fetchAllMovies();
     const favoriteMovies = movies.filter((movie) => movie["favorite"]);
-    const now = DateTime.now();
+    const now = new Date();
+
     const recentlyWatchedMovies = movies.filter((movie) => {
       const lastWatched = movie["last_watched"];
-      return (
-        lastWatched &&
-        now.diff(DateTime.fromISO(lastWatched), "months").months <= 6
-      );
+      if (!lastWatched) return false;
+
+      const lastWatchedDate = new Date(lastWatched);
+      if (isNaN(lastWatchedDate.getTime())) return false;
+
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+      return lastWatchedDate >= sixMonthsAgo;
     });
 
     return {
@@ -48,7 +53,7 @@ export default async function () {
       watchHistory: movies.filter((movie) => movie["last_watched"]),
       recentlyWatched: recentlyWatchedMovies,
       favorites: favoriteMovies.sort((a, b) =>
-        a["title"].localeCompare(b["title"])
+        a["title"].localeCompare(b["title"]),
       ),
       feed: movies.filter((movie) => movie["feed"]),
     };

@@ -1,12 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
-import { DateTime } from "luxon";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const fetchAlbumReleases = async () => {
-  const today = DateTime.utc().startOf("day").toSeconds();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayTimestamp = today.getTime() / 1000;
 
   const { data, error } = await supabase
     .from("optimized_album_releases")
@@ -19,20 +20,24 @@ const fetchAlbumReleases = async () => {
 
   const all = data
     .map((album) => {
-      const releaseDate = DateTime.fromSeconds(album["release_timestamp"])
-        .toUTC()
-        .startOf("day");
+      const releaseDate = new Date(album["release_timestamp"] * 1000);
 
       return {
         ...album,
         description: album["artist"]["description"],
-        date: releaseDate.toLocaleString(DateTime.DATE_FULL),
-        timestamp: releaseDate.toSeconds(),
+        date: releaseDate.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
       };
     })
-    .sort((a, b) => a["timestamp"] - b["timestamp"]);
+    .sort((a, b) => a["release_timestamp"] - b["release_timestamp"]);
 
-  const upcoming = all.filter((album) => album["release_timestamp"] > today && album['total_plays'] === 0);
+  const upcoming = all.filter(
+    (album) =>
+      album["release_timestamp"] > todayTimestamp && album["total_plays"] === 0,
+  );
 
   return { all, upcoming };
 };
