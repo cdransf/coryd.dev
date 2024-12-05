@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import ics from "ics";
+import { staticSitemapPages } from "../constants.js";
 
 export const popularPosts = (collection) => {
   const collectionData = collection.getAll()[0];
@@ -20,32 +21,8 @@ export const popularPosts = (collection) => {
 export const sitemap = (collection) => {
   const collectionData = collection.getAll()[0];
   const { data } = collectionData;
-  const { sitemap, pages } = data;
-  const staticMap = [
-    { url: "https://coryd.dev/books" },
-    { url: "https://coryd.dev/books/years/2018" },
-    { url: "https://coryd.dev/books/years/2019" },
-    { url: "https://coryd.dev/books/years/2020" },
-    { url: "https://coryd.dev/books/years/2021" },
-    { url: "https://coryd.dev/books/years/2022" },
-    { url: "https://coryd.dev/books/years/2023" },
-    { url: "https://coryd.dev/books/years/2024" },
-    { url: "https://coryd.dev/music" },
-    { url: "https://coryd.dev/music/this-week/albums" },
-    { url: "https://coryd.dev/music/this-week/artists" },
-    { url: "https://coryd.dev/music/this-month" },
-    { url: "https://coryd.dev/music/this-month/albums" },
-    { url: "https://coryd.dev/music/this-month/artists" },
-    { url: "https://coryd.dev/watching" },
-    { url: "https://coryd.dev/watching/favorites/movies" },
-    { url: "https://coryd.dev/watching/favorites/shows" },
-    { url: "https://coryd.dev/watching/recent/movies" },
-    { url: "https://coryd.dev/watching/recent/shows" },
-    { url: "https://coryd.dev/posts" },
-    { url: "https://coryd.dev/links" },
-  ];
-
-  return [...sitemap, ...staticMap];
+  const { sitemap } = data;
+  return [...sitemap, ...staticSitemapPages];
 };
 
 export const albumReleasesCalendar = (collection) => {
