@@ -1,0 +1,13 @@
+---
+permalink: "/_headers"
+layout: null
+eleventyExcludeFromCollections: true
+---
+{%- for pathData in headers -%}
+{{ pathData.resource_path }}
+{%- for header in pathData.headers %}
+  {{ header.header_name }}: {{ header.header_value }}
+{%- endfor %}
+{%- if forloop.last == false %}
+{% endif -%}
+{%- endfor -%}

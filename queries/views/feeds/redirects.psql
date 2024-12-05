@@ -1,0 +1,7 @@
+CREATE OR REPLACE VIEW optimized_redirects AS
+SELECT
+    r.from AS source_url,
+    r.to AS destination_url,
+    r.status_code
+FROM
+    redirects r;

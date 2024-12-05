@@ -1,0 +1,12 @@
+CREATE OR REPLACE VIEW optimized_headers AS
+SELECT
+    p.path AS resource_path,
+    json_agg(json_build_object('header_name', hr.name, 'header_value', hr.value)) AS headers
+FROM
+    paths p
+JOIN
+    paths_header_rules phr ON p.id = phr.paths_id
+JOIN
+    header_rules hr ON phr.header_rules_id = hr.id
+GROUP BY
+    p.path;

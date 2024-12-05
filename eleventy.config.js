@@ -7,7 +7,6 @@ import { minifyJsComponents } from "./config/events/index.js";
 import {
   popularPosts,
   albumReleasesCalendar,
-  sitemap,
 } from "./config/collections/index.js";
 import plugins from "./config/plugins/index.js";
 
@@ -44,7 +43,6 @@ export default async function (eleventyConfig) {
 
   eleventyConfig.addCollection("popularPosts", popularPosts);
   eleventyConfig.addCollection("albumReleasesCalendar", albumReleasesCalendar);
-  eleventyConfig.addCollection("sitemap", sitemap);
 
   eleventyConfig.setLibrary("md", plugins.markdownLib);
 

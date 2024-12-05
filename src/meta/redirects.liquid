@@ -1,0 +1,9 @@
+---
+permalink: "/_redirects"
+layout: null
+eleventyExcludeFromCollections: true
+excludeFromSitemap: true
+---
+{% for redirect in redirects -%}
+{{ redirect.source_url }} {{ redirect.destination_url }} {{ redirect.status_code }}
+{% endfor -%}

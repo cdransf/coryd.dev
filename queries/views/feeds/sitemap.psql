@@ -34,6 +34,11 @@ WITH sitemap_data AS (
         CONCAT('https://coryd.dev', pa.permalink) AS url
     FROM
         optimized_pages pa
+    UNION ALL
+    SELECT
+        CONCAT('https://coryd.dev', ss.slug) AS url
+    FROM
+        static_slugs ss
 )
 SELECT
     url

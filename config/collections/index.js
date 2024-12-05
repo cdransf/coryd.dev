@@ -1,5 +1,4 @@
 import ics from "ics";
-import { staticSitemapPages } from "../constants.js";
 
 export const popularPosts = (collection) => {
   const collectionData = collection.getAll()[0];
@@ -15,13 +14,6 @@ export const popularPosts = (collection) => {
         analytics.filter((p) => p.page.includes(page.url)).pop()?.visitors;
       return visitors(b) - visitors(a);
     });
-};
-
-export const sitemap = (collection) => {
-  const collectionData = collection.getAll()[0];
-  const { data } = collectionData;
-  const { sitemap } = data;
-  return [...sitemap, ...staticSitemapPages];
 };
 
 export const albumReleasesCalendar = (collection) => {
