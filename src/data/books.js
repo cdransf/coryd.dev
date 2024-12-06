@@ -39,7 +39,7 @@ const sortBooksByYear = (books) => {
       years[year]["data"].push(book);
     }
   });
-  return Object.values(years).filter((year) => year["value"] > 2017);
+  return Object.values(years).filter((year) => year["value"]);
 };
 
 const currentYear = new Date().getFullYear();
@@ -48,8 +48,9 @@ export default async function () {
   const books = await fetchAllBooks();
   const sortedByYear = sortBooksByYear(books);
   const booksForCurrentYear =
-    sortedByYear.find((yearGroup) => yearGroup.value === currentYear)?.data.filter(book => book['status'] === 'finished') ||
-    [];
+    sortedByYear
+      .find((yearGroup) => yearGroup.value === currentYear)
+      ?.data.filter((book) => book["status"] === "finished") || [];
 
   return {
     all: books,
