@@ -1,6 +1,6 @@
 # coryd.dev
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/f383dd0a-5c76-4c57-b910-20041af738c8/deploy-status)](https://app.netlify.com/sites/coryd/deploys) [![Scheduled deploy](https://github.com/cdransf/coryd.dev/actions/workflows/scheduled-deploy.yaml/badge.svg)](https://github.com/cdransf/coryd.dev/actions/workflows/scheduled-deploy.yaml)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f383dd0a-5c76-4c57-b910-20041af738c8/deploy-status)](https://app.netlify.com/sites/coryd/deploys)
 
 Hi! I'm Cory. 👋🏻
 
@@ -27,13 +27,13 @@ This is the code for my personal website and portfolio. Built using [11ty](https
 
 ## Commands
 
-`npm run start`: starts 11ty.    
-`npm run "start:quick"`: starts 11ty a bit quicker (provided it's already been built).    
-`npm run build`: builds static site output.    
-`npm run debug`: runs 11ty with additional debug output.    
-`npm run update:deps`: checks for dependency updates and updates 11ty.    
-`npm run clean`: removes the build output folder to allow for a clean build.    
-`netlify dev`: local development with Netlify functions.    
+`npm run start`: starts 11ty.
+`npm run "start:quick"`: starts 11ty a bit quicker (provided it's already been built).
+`npm run build`: builds static site output.
+`npm run debug`: runs 11ty with additional debug output.
+`npm run update:deps`: checks for dependency updates and updates 11ty.
+`npm run clean`: removes the build output folder to allow for a clean build.
+`netlify dev`: local development with Netlify functions.
 
 ## Required environment variables
 
@@ -49,4 +49,5 @@ ARTIST_FLOW_ID
 ALBUM_FLOW_ID
 MASTODON_ACCESS_TOKEN
 FORWARDEMAIL_API_KEY
+DEPLOY_HOOK
 ```

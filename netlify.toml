@@ -9,6 +9,9 @@ directory = "functions"
 [functions.mastodon]
 schedule = "15,45 * * * *"
 
+[functions.rebuild]
+schedule = "0 * * * *"
+
 [[edge_functions]]
 function = "scrobble"
 path = "/api/scrobble"
