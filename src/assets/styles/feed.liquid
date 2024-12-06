@@ -9,7 +9,7 @@ permalink: /assets/styles/feed.xsl
     <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
       <head>
         <title>
-          <xsl:value-of select="/rss/channel/title" /> / {{ globals.site_name }}
+          <xsl:value-of select="/rss/channel/title" />
         </title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
@@ -27,9 +27,6 @@ permalink: /assets/styles/feed.xsl
           <main>
             {% render "header.liquid", globals:globals, page:page, nav:nav %}
             <div class="default-wrapper">
-              <h2 class="page-title">
-                <xsl:value-of select="/rss/channel/title" />
-              </h2>
               <article class="intro">
                 <p>
                   <xsl:value-of select="/rss/channel/description" />
