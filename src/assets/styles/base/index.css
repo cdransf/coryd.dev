@@ -74,22 +74,6 @@ svg {
   stroke-width: var(--stroke-width-default);
 }
 
-:not(pre) > code {
-  padding: var(--sizing-xs) var(--sizing-sm);
-}
-
-pre {
-  padding: var(--sizing-lg) var(--sizing-base);
-}
-
-:not(pre) > code,
-pre {
-  color: #e1e4e8;
-  background-color: #161b22;
-  border: var(--border-gray);
-  border-radius: var(--border-radius-slight);
-}
-
 /* images */
 img {
   border-radius: var(--border-radius-slight);
@@ -335,16 +319,6 @@ article {
       color: var(--gray-dark);
       font-size: var(--font-size-sm);
     }
-  }
-}
-
-.footnotes {
-  & ol li p {
-    display: inline;
-  }
-
-  #footnote-label {
-    display: none;
   }
 }
 
