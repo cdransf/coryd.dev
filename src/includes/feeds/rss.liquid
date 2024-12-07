@@ -22,25 +22,25 @@
       {% assign entryData = entry.feed | default:entry.syndication %}
       <item>
         <title><![CDATA[
-          {% if entry.feed %}
+          {%- if entry.feed -%}
             {{ entry.feed.title }}{% if entry.feed.artist and entry.feed.artist.name %} via {{ entry.feed.artist.name }}{% endif %}
             {% if entry.rating %} ({{ entry.rating }}){% endif %}
-          {% else %}
+          {%- else -%}
             {{ entry.syndication.title }}
-          {% endif %}
+          {%- endif -%}
         ]]></title>
         <link>{{ entryData.url | encodeAmp }}</link>
         <pubDate>{{ entryData.date | stringToRFC822Date }}</pubDate>
         <guid isPermaLink="false">{{ entryData.url | encodeAmp }}</guid>
-        {% if entry.feed and entry.feed.image %}
+        {%- if entry.feed and entry.feed.image -%}
           <enclosure url="{{ globals.cdn_url }}{{ entry.feed.image }}?class=w800&amp;type=jpg" type="image/jpeg" />
-        {% endif %}
+        {%- endif -%}
         <description><![CDATA[
-          {% if entry.feed %}
+          {%- if entry.feed -%}
             {{ entry.feed.description | markdown }}
-          {% else %}
+          {%- else -%}
             {{ entry.syndication.description | escape | markdown }}
-          {% endif %}
+          {%- endif -%}
         ]]></description>
       </item>
     {% endfor %}
