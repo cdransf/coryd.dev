@@ -1,7 +1,6 @@
 import { createRequire } from "module";
 import dotenvFlow from "dotenv-flow";
 import filters from "./config/filters/index.js";
-import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
 import tablerIcons from "@cdransf/eleventy-plugin-tabler-icons";
 import { minifyJsComponents } from "./config/events/index.js";
 import {
@@ -18,7 +17,6 @@ const require = createRequire(import.meta.url);
 const appVersion = require("./package.json").version;
 
 export default async function (eleventyConfig) {
-  eleventyConfig.addPlugin(syntaxHighlight);
   eleventyConfig.addPlugin(tablerIcons);
   eleventyConfig.addPlugin(plugins.cssConfig);
   eleventyConfig.addPlugin(plugins.htmlConfig);

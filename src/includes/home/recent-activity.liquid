@@ -1,4 +1,4 @@
-{%- assign currentYear = 'now' | date: "%Y" -%}
+{%- assign currentYear = "now" | date:"%Y" -%}
 {%- assign artist = music.week.artists | first -%}
 {%- assign track = music.week.tracks | first -%}
 {%- assign show = tv.recentlyWatched | first -%}
@@ -16,5 +16,8 @@
   <p><span class="movies">Last movie watched:</span> <a href="{{ movie.url }}">{{ movie.title }}</a>{%- if movie.rating %} ({{ movie.rating }}){%- endif -%}</p>
   <p><span class="books">Last book finished:</span> <a href="{{ book.url }}">{{ book.title }}</a> by {{ book.author }}{%- if book.rating %} ({{ book.rating }}){%- endif -%}</p>
   <p><span class="link">Last link shared:</span> <a href="{{ link.link }}">{{ link.title }}</a>{% if link.author %} via <a href="{{ link.author.url }}">{{ link.author.name }}</a>{% endif %}</p>
-  {% render "blocks/banners/rss.liquid", url: "/feeds", text: "Subscribe to my movies, books, links or activity feed(s)" %}
+  {% render "blocks/banners/rss.liquid",
+    url:"/feeds",
+    text:"Subscribe to my movies, books, links or activity feed(s)"
+  %}
 </article>

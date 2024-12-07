@@ -46,12 +46,16 @@ schema: book
       {% endif %}
       {% if book.status == 'started' %}
         {%- assign percentage = book.progress | append: '%' -%}
-        {% render "media/progress-bar.liquid", percentage:percentage %}
+        {% render "media/progress-bar.liquid",
+          percentage:percentage
+        %}
       {% endif %}
     </div>
   </div>
   {% if book.review %}
-  {% render "blocks/banners/warning.liquid", text: "There are probably spoilers after this banner — this is a warning about them." %}
+  {% render "blocks/banners/warning.liquid",
+    text:"There are probably spoilers after this banner — this is a warning about them."
+  %}
   <h2>My thoughts</h2>
   {{ book.review | markdown }}
   {% endif %}
@@ -64,7 +68,7 @@ schema: book
       shows: book.shows
     %}
   {% if book.description %}
-    <h2>Overview</h2>
-    {{ book.description | markdown }}
+  <h2>Overview</h2>
+  {{ book.description | markdown }}
   {% endif %}
 </article>

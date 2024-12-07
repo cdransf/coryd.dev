@@ -1,6 +1,6 @@
 {%- assign categoryUrl = link.permalink | downcase -%}
 {%- assign isHttp = categoryUrl contains "http" -%}
-{%- if categoryUrl | isLinkActive: page.url -%}
+{%- if categoryUrl | isLinkActive:page.url -%}
   <span
     class="active {{ link.class }}"
     aria-current="page"

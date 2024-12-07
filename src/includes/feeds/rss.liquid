@@ -1,13 +1,16 @@
+{%- assign entries = data -%}
+{%- assign firstEntry = entries | first -%}
 <?xml version="1.0" encoding="UTF-8" ?>
+{%- unless firstEntry.syndication -%}
 <?xml-stylesheet href="/assets/styles/feed.xsl" type="text/xsl" ?>
+{%- endunless -%}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <atom:link href="{{ globals.url }}{{ permalink }}" rel="self" type="application/rss+xml" />
-    {%- assign entries = data -%}
     <title><![CDATA[{{ title }}]]></title>
     <description><![CDATA[{{ globals.site_description }}]]></description>
     <link>{{ globals.url }}{{ permalink }}</link>
-    <lastBuildDate>{{ 'now' | date: "%a, %d %b %Y %H:%M:%S %z" }}</lastBuildDate>
+    <lastBuildDate>{{ "now" | date:"%a, %d %b %Y %H:%M:%S %z" }}</lastBuildDate>
     <image>
       <title><![CDATA[{{ title }}]]></title>
       <link>{{ globals.url }}{{ permalink }}</link>
@@ -15,24 +18,31 @@
       <width>144</width>
       <height>144</height>
     </image>
-    {% for entry in entries limit: 20 -%}
-      {%- assign entryFeed = entry.feed -%}
-      {%- assign rating = entry.rating -%}
-      {%- capture entryTitle -%}
-        {{ entryFeed.title }}
-        {%- if entryFeed.artist and entryFeed.artist.name %} via {{ entryFeed.artist.name }}{%- endif -%}
-        {%- if rating %} ({{ rating }}){%- endif -%}
-      {%- endcapture -%}
+    {% for entry in entries limit:20 %}
+      {% assign entryData = entry.feed | default:entry.syndication %}
       <item>
-        <title><![CDATA[{{ entryTitle }}]]></title>
-        <link>{{ entryFeed.url | encodeAmp }}</link>
-        <pubDate>{{ entryFeed.date | stringToRFC822Date }}</pubDate>
-        <guid isPermaLink="false">{{ entryFeed.url | encodeAmp }}</guid>
-        {%- if entryFeed.image -%}
-          <enclosure url="{{ globals.cdn_url }}{{ entryFeed.image }}?class=w800&amp;type=jpg" type="image/jpeg" />
-        {%- endif -%}
-        <description><![CDATA[{{ entryFeed.description | markdown }}]]></description>
+        <title><![CDATA[
+          {% if entry.feed %}
+            {{ entry.feed.title }}{% if entry.feed.artist and entry.feed.artist.name %} via {{ entry.feed.artist.name }}{% endif %}
+            {% if entry.rating %} ({{ entry.rating }}){% endif %}
+          {% else %}
+            {{ entry.syndication.title }}
+          {% endif %}
+        ]]></title>
+        <link>{{ entryData.url | encodeAmp }}</link>
+        <pubDate>{{ entryData.date | stringToRFC822Date }}</pubDate>
+        <guid isPermaLink="false">{{ entryData.url | encodeAmp }}</guid>
+        {% if entry.feed and entry.feed.image %}
+          <enclosure url="{{ globals.cdn_url }}{{ entry.feed.image }}?class=w800&amp;type=jpg" type="image/jpeg" />
+        {% endif %}
+        <description><![CDATA[
+          {% if entry.feed %}
+            {{ entry.feed.description | markdown }}
+          {% else %}
+            {{ entry.syndication.description | escape | markdown }}
+          {% endif %}
+        ]]></description>
       </item>
-    {%- endfor %}
+    {% endfor %}
   </channel>
 </rss>

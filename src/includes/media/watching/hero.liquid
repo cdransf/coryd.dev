@@ -9,6 +9,10 @@
         ({{ movie.year }})
       </div>
     </div>
-    {% render "blocks/hero.liquid", globals:globals, image:movie.backdrop, alt:movie.title %}
+    {% render "blocks/hero.liquid",
+      globals:globals,
+      image:movie.backdrop,
+      alt:movie.title
+    %}
   </div>
 </a>

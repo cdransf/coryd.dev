@@ -1,7 +1,7 @@
 <div class="music-chart">
   <ol type="1">
-    {%- for item in data limit: count -%}
-      {%- assign percentage = item.chart.percentage | append: '%' -%}
+    {%- for item in data limit:count -%}
+      {%- assign percentage = item.chart.percentage | append:"%" -%}
       <li value="{{ item.chart.rank }}">
         <div class="item">
           <div class="info">
@@ -10,9 +10,16 @@
             <span class="subtext">{{ item.chart.artist }}</span>
             <span class="subtext">{{ item.chart.plays }} {{ playsLabel }}</span>
           </div>
-          {% render "media/progress-bar.liquid", percentage:percentage %}
+          {% render "media/progress-bar.liquid",
+            percentage:percentage
+          %}
         </div>
       </li>
     {%- endfor -%}
   </ol>
 </div>
+{%- unless hidePagination -%}
+  {% render "nav/paginator.liquid",
+    pagination:pagination
+  %}
+{%- endunless -%}

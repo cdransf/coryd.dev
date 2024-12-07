@@ -1,4 +1,4 @@
-{% assign media = artists | concat: books | concat: genres | concat: movies | concat: posts | concat: shows %}
+{% assign media = artists | concat:books | concat:genres | concat:movies | concat:posts | concat:shows %}
 {% if media.size > 0 %}
   <div class="associated-media">
     {% assign sections =
@@ -8,9 +8,9 @@
       "movies:movie:movies:Related movie(s)," | append:
       "posts:article:article:Related post(s)," | append:
       "shows:device-tv-old:tv:Related show(s)"
-    | split: "," %}
+    | split:"," %}
     {% for section in sections %}
-      {% assign parts = section | split: ":" %}
+      {% assign parts = section | split:":" %}
       {% assign key = parts[0] %}
       {% assign icon = parts[1] %}
       {% assign css_class = parts[2] %}
@@ -31,17 +31,17 @@
         <ul>
           {% for item in items %}
             <li>
-              <a href="{{ item.url }}">{{ item.title | default: item.name }}</a>
+              <a href="{{ item.url }}">{{ item.title | default:item.name }}</a>
               {% if key == "artists" and item.total_plays > 0 %}
                 <strong class="highlight-text">
-                  {{ item.total_plays }} {{ item.total_plays | pluralize: "play" }}
+                  {{ item.total_plays }} {{ item.total_plays | pluralize:"play" }}
                 </strong>
               {% elsif key == "books" %}
                 by {{ item.author }}
               {% elsif key == "movies" or key == "shows" %}
                 ({{ item.year }})
               {% elsif key == "posts" %}
-                ({{ item.date | date: "%B %e, %Y" }})
+                ({{ item.date | date:"%B %e, %Y" }})
               {% endif %}
             </li>
           {% endfor %}

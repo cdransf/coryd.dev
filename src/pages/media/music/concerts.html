@@ -34,9 +34,15 @@ permalink: "/music/concerts/{% if pagination.pageNumber > 0 %}{{ pagination.page
       {% if venue %} at {{ venue }}{% endif %}
       {%- if concert.notes -%}
         {% assign notes = concert.notes | prepend: "### Notes\n" | markdown %}
-        {% render "blocks/modal.liquid", icon:"info-circle", content:notes, id:concert.id %}
+        {% render "blocks/modal.liquid",
+          icon:"info-circle",
+          content:notes,
+          id:concert.id
+        %}
       {%- endif -%}
     </li>
   {%- endfor -%}
 </ul>
-{% render "nav/paginator.liquid", pagination:pagination %}
+{% render "nav/paginator.liquid",
+  pagination:pagination
+%}

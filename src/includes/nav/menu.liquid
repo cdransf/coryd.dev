@@ -6,7 +6,12 @@
   </label>
   <ul class="menu-primary" aria-label="Primary site navigation" id="primary-navigation">
     {%- for link in nav.primary -%}
-      <li>{% render "nav/link.liquid", page:page, link:link %}</li>
+      <li>
+        {% render "nav/link.liquid",
+          page:page,
+          link:link
+        %}
+      </li>
     {%- endfor -%}
   </ul>
 </menu>

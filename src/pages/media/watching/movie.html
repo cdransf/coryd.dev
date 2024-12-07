@@ -47,10 +47,14 @@ schema: movie
     {%- if movie.collected -%}
       <span class="sub-meta collected">{% tablericon "circle-check" %} This movie is in my collection!</span>
     {%- endif -%}
-    {%- if movie.lastWatched -%}<span class="sub-meta">Last watched on {{ movie.lastWatched | date: "%B %e, %Y" }}.</span>{%- endif -%}
   </div>
+  {%- if movie.last_watched -%}
+  <p>Last watched on <strong class="highlight-text">{{ movie.last_watched | date: "%B %e, %Y" }}</strong>.</p>
+  {%- endif -%}
   {% if movie.review %}
-  {% render "blocks/banners/warning.liquid", text: "There are probably spoilers after this banner — this is a warning about them." %}
+  {% render "blocks/banners/warning.liquid",
+    text: "There are probably spoilers after this banner — this is a warning about them."
+  %}
   <h2>My thoughts</h2>
   {{ movie.review | markdown }}
   {% endif %}
@@ -63,7 +67,7 @@ schema: movie
     shows: movie.shows
   %}
   {% if movie.description %}
-    <h2>Overview</h2>
-    {{ movie.description | markdown }}
+  <h2>Overview</h2>
+  {{ movie.description | markdown }}
   {% endif %}
 </article>

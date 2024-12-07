@@ -19,4 +19,6 @@ permalink: "/posts/{% if pagination.pageNumber > 0 %}{{ pagination.pageNumber }}
   <p>{{ post.description | markdown }}</p>
 </article>
 {% endfor %}
-{% render "nav/paginator.liquid", pagination:pagination %}
+{% render "nav/paginator.liquid",
+  pagination:pagination
+%}

@@ -9,22 +9,11 @@ updated: "now"
 image: music.month.albums[0].image
 schema: music-period
 ---
-
 {% if pagination.pageNumber == 0 %}
 <h2 class="page-title">Albums this month</h2>
-<p>
-  These are the albums I've been listening to this month. All of them are awesome. Listed in descending order from most plays to least.
-</p>
-<p>
-  <strong class="highlight-text">You can also take a look at</strong> the
-  <a href="/music/this-month/artists">artists I've listened to this month</a>,
-  <a href="/music/this-week/artists">the artists I've listened to this week</a>
-  or
-  <a href="/music/this-week/albums">the albums I've listened to this week</a>.
-</p>
-<p>
-  <a href="/music/concerts">I keep track of the concerts I've been to too</a>.
-</p>
+<p>These are the albums I've been listening to this month. All of them are awesome. Listed in descending order from most plays to least.</p>
+<p><strong class="highlight-text">You can also take a look at</strong> the <a href="/music/this-month/artists">artists I've listened to this month</a>, <a href="/music/this-week/artists">the artists I've listened to this week</a> or <a href="/music/this-week/albums">the albums I've listened to this week</a>.</p>
+<p><a href="/music/concerts">I keep track of the concerts I've been to too</a>.</p>
 <hr />
 {% endif %}
 {% render "media/grid.liquid",
@@ -32,5 +21,5 @@ schema: music-period
   data:pagination.items,
   pagination:pagination,
   shape:"square",
-  count: 16
+  count:16
 %}

@@ -8,20 +8,35 @@ schema: music-index
 <h2 class="page-title">{{ title }}</h2>
 <p>I've listened to <strong class="highlight-text">{{ music.week.artists.size }} artists</strong>, <strong class="highlight-text">{{ music.week.albums.size }} albums</strong> and <strong class="highlight-text">{{ music.week.totalTracks }} tracks</strong> this week. Most of that has been {{ music.week.genres | mediaLinks: "genre", 5 }}.</p>
 <p><strong class="highlight-text">Take a look at what I've listened to</strong> <a href="/music/this-month">this month</a> or <a href="/music/concerts">check out the concerts I've been to.</a></p>
-<p class="music">{% render "blocks/now-playing.liquid", nowPlaying:nowPlaying.content %}</p>
+<p class="music">
+  {% render "blocks/now-playing.liquid",
+    nowPlaying:nowPlaying.content
+  %}
+</p>
 <hr />
 <h3 id="artists">
   <a href="/music/this-week/artists">
     {% tablericon "microphone-2" %} Artists
   </a>
 </h3>
-{% render "media/grid.liquid", globals:globals, data:music.week.artists, shape:"square", count: 8, loading: "eager" %}
+{% render "media/grid.liquid",
+  globals:globals,
+  data:music.week.artists,
+  shape:"square",
+  count:8,
+  loading:"eager"
+%}
 <h3 id="albums">
   <a href="/music/this-week/albums">
     {% tablericon "vinyl" %} Albums
   </a>
 </h3>
-{% render "media/grid.liquid", globals:globals, data:music.week.albums, shape:"square", count: 8 %}
+{% render "media/grid.liquid",
+  globals:globals,
+  data:music.week.albums,
+  shape:"square",
+  count:8
+%}
 <h3 id="tracks">
   {% tablericon "playlist" %}
   Tracks
@@ -32,10 +47,16 @@ schema: music-index
   <label for="tracks-recent" class="button" data-toggle="tracks-recent">Recent</label>
   <label for="tracks-chart" class="button" data-toggle="tracks-chart">This week</label>
   <div class="tracks-recent">
-    {% render "media/music/recent", globals:globals, data:music.recent %}
+    {% render "media/music/recent",
+      globals:globals,
+      data:music.recent
+    %}
   </div>
   <div class="tracks-chart">
-    {% render "media/music/chart.liquid", data:music.week.tracks, count: 10 %}
+    {% render "media/music/chart.liquid",
+      data:music.week.tracks,
+      count:10
+    %}
   </div>
 </div>
 {% if albumReleases.size > 0 %}
@@ -43,5 +64,10 @@ schema: music-index
     {% tablericon "calendar-time" %}
     Anticipated albums
   </h3>
-  {% render "media/grid.liquid", globals:globals, data:albumReleases.upcoming, shape:"square", count: 8 %}
+  {% render "media/grid.liquid",
+    globals:globals,
+    data:albumReleases.upcoming,
+    shape:"square",
+    count:8
+  %}
 {% endif %}

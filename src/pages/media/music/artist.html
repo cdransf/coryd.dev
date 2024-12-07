@@ -7,7 +7,6 @@ permalink: "{{ artist.url }}/index.html"
 updated: "now"
 schema: artist
 ---
-
 {%- capture alt -%}
   {{ artist.name }} / {{ artist.country }}
 {%- endcapture -%}
@@ -36,9 +35,7 @@ endcapture -%}
     }
   </style></noscript
 >
-<a class="back-link" href="/music" title="Go back to the music index page"
-  >{% tablericon "arrow-left" %} Back to music</a
->
+<a class="back-link" href="/music" title="Go back to the music index page">{% tablericon "arrow-left" %} Back to music</a>
 <article class="artist-focus">
   <div class="artist-display">
     <img
@@ -59,24 +56,17 @@ endcapture -%}
     />
     <div class="media-meta">
       <span class="title"><strong>{{ artist.name }}</strong></span>
-      <span class="sub-meta country"
-        >{% tablericon "map-pin" %} {{ artist.country }}</span
-      >
+      <span class="sub-meta country">{% tablericon "map-pin" %} {{ artist.country }}</span>
       {%- if artist.favorite -%}
-      <span class="sub-meta favorite"
-        >{% tablericon "heart" %} This is one of my favorite artists!</span
-      >
-      {%- endif -%} {%- if artist.tattoo -%}
-      <span class="sub-meta tattoo"
-        >{% tablericon "needle" %} I have a tattoo inspired by this
-        artist!</span
-      >
-      {%- endif -%} {%- if artist.total_plays > 0 -%}
-      <span class="sub-meta"
-        ><strong class="highlight-text"
-          >{{ artist.total_plays }} {{ playLabel }}</strong
-        ></span
-      >
+      <span class="sub-meta favorite">{% tablericon "heart" %} This is one of my favorite artists!</span>
+      {%- endif -%}
+      {%- if artist.tattoo -%}
+      <span class="sub-meta tattoo">{% tablericon "needle" %} I have a tattoo inspired by this artist!</span>
+      {%- endif -%}
+      {%- if artist.total_plays > 0 -%}
+      <span class="sub-meta">
+        <strong class="highlight-text">{{ artist.total_plays }} {{ playLabel }}</strong>
+      </span>
       {%- endif -%}
       <span class="sub-meta">
         {{ emoji }}
@@ -89,37 +79,51 @@ endcapture -%}
       </span>
     </div>
   </div>
-  {% render "blocks/associated-media.liquid", artists: artist.related_artists,
-  books: artist.books, genres: artist.genres, movies: artist.movies, posts:
-  artist.posts, shows: artist.shows %} {%- if artist.description -%}
+  {% render "blocks/associated-media.liquid",
+    artists:artist.related_artists,
+    books:artist.books,
+    genres:artist.genres,
+    movies:artist.movies,
+    posts:artist.posts,
+    shows:artist.shows
+  %}
+  {%- if artist.description -%}
   <h2>Overview</h2>
   <div data-toggle-content class="text-toggle-hidden">
     {{ artist.description | markdown }}
   </div>
   <button data-toggle-button>Show more</button>
-  {%- endif -%} {%- if artist.concerts -%}
+  {%- endif -%}
+  {%- if artist.concerts -%}
   <p id="concerts" class="concerts">
     {% tablericon "device-speaker" %} I've seen this artist live!
   </p>
   <ul>
-    {% for concert in artist.concerts %} {%- capture venue -%} {% if
-    concert.venue_name %} {% if concert.venue_latitude and
-    concert.venue_longitude %}
+    {% for concert in artist.concerts %}
+    {%- capture venue -%}
+    {% if concert.venue_name %}
+    {% if concert.venue_latitude and concert.venue_longitude %}
     <a
-      href="https://www.openstreetmap.org/?mlat={{ concert.venue_latitude }}&mlon={{ concert.venue_longitude }}#map=18/{{ concert.venue_latitude }}/{{ concert.venue_longitude }}"
-      >{{ concert.venue_name_short }}</a
-    >
-    {% else %} {{ concert.venue_name_short }} {% endif %} {% endif %} {%-
-    endcapture -%}
+      href="https://www.openstreetmap.org/?mlat={{ concert.venue_latitude }}&mlon={{ concert.venue_longitude }}#map=18/{{ concert.venue_latitude }}/{{ concert.venue_longitude }}">
+        {{ concert.venue_name_short }}
+      </a>
+    {% else %}
+    {{ concert.venue_name_short }}
+    {% endif %}
+    {% endif %}
+    {%- endcapture -%}
     <li>
-      On
-      <strong class="highlight-text"
-        >{{ concert.date | date: "%B %e, %Y" }}</strong
-      >
-      {% if venue %} at {{ venue }}{% endif %} {%- if concert.notes -%} {%
-      assign notes = concert.notes | prepend: "### Notes\n" | markdown %} {%
-      render "blocks/modal.liquid", label:"Concert info", icon:"info-circle",
-      content:notes, id:concert.id %} {%- endif -%}
+      On <strong class="highlight-text">{{ concert.date | date: "%B %e, %Y" }}</strong>
+      {% if venue %} at {{ venue }}{% endif %}
+      {%- if concert.notes -%}
+      {% assign notes = concert.notes | prepend: "### Notes\n" | markdown %}
+      {% render "blocks/modal.liquid",
+        label:"Concert info",
+        icon:"info-circle",
+        content:notes,
+        id:concert.id
+      %}
+      {%- endif -%}
     </li>
     {% endfor %}
   </ul>
@@ -138,10 +142,6 @@ endcapture -%}
     </tr>
     {% endfor %}
   </table>
-  <p>
-    <em
-      >These are the albums by this artist that are in my collection, not
-      necessarily a comprehensive discography.</em
-    >
-  </p>
+  <p><em>These are the albums by this artist that are in my collection, not
+      necessarily a comprehensive discography.</em></p>
 </article>

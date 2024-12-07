@@ -20,4 +20,10 @@ schema: books-year
 <p>I finished <strong class="highlight-text">{{ bookData.size }} books</strong> in <strong class="highlight-text">{{ year.value }}</strong>.{%- if favoriteBooks %}  Among my favorites were {{ favoriteBooks }}.{%- endif -%}</p>
 {% endif %}
 <hr />
-{% render "media/grid.liquid", globals:globals, data:bookData, shape:"vertical", count: 200, loading: "eager" %}
+{% render "media/grid.liquid",
+  globals:globals,
+  data:bookData,
+  shape:"vertical",
+  count:200,
+  loading:"eager"
+%}

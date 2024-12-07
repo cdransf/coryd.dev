@@ -39,15 +39,19 @@ schema: show
     {%- if show.collected -%}
       <span class="sub-meta collected">{% tablericon "circle-check" %} This show is in my collection!</span>
     {%- endif -%}
+  </div>
+  <p>
     {%- if show.episode.formatted_episode -%}
       {%- capture lastWatchedText -%}
         I last watched <strong class="highlight-text">{{ show.episode.formatted_episode }}</strong> on {{ show.episode.last_watched_at | date: "%B %e, %Y" }}.
       {%- endcapture -%}
       <span class="sub-meta">{{ lastWatchedText }}</span>
     {%- endif -%}
-  </div>
+  </p>
   {% if show.review %}
-  {% render "blocks/banners/warning.liquid", text: "There are probably spoilers after this banner — this is a warning about them." %}
+  {% render "blocks/banners/warning.liquid",
+    text: "There are probably spoilers after this banner — this is a warning about them."
+  %}
   <h2>My thoughts</h2>
   {{ show.review | markdown }}
   {% endif %}
@@ -60,7 +64,7 @@ schema: show
     shows: show.related_shows
   %}
   {% if show.description %}
-    <h2>Overview</h2>
-    {{ show.description | markdown }}
+  <h2>Overview</h2>
+  {{ show.description | markdown }}
   {% endif %}
 </article>

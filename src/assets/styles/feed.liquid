@@ -25,7 +25,11 @@ permalink: /assets/styles/feed.xsl
       <body class="feed">
         <div class="main-wrapper">
           <main>
-            {% render "header.liquid", globals:globals, page:page, nav:nav %}
+            {% render "layout/header.liquid",
+              globals:globals,
+              page:page,
+              nav:nav
+            %}
             <div class="default-wrapper">
               <article class="intro">
                 <p>
@@ -65,7 +69,7 @@ permalink: /assets/styles/feed.xsl
               </section>
             </div>
           </main>
-          {% render "footer.liquid",
+          {% render "layout/footer.liquid",
             page:page,
             nav:nav,
             updated:updated,

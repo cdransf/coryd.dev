@@ -5,7 +5,7 @@
     {{ label }}
   {%- endif -%}
 {%- endcapture -%}
-{% assign modalId = id | default: "modal-controls" %}
+{% assign modalId = id | default:"modal-controls" %}
 <input class="modal-input" id="{{ id }}" type="checkbox" tabindex="0" />
 <label class="modal-toggle" for="{{ id }}">{{ labelContent }}</label>
 <div class="modal-wrapper">

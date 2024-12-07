@@ -4,9 +4,9 @@
     <link rel="preload" href="/assets/fonts/ml.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="preload" href="/assets/fonts/mlb.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="stylesheet" href="/assets/styles/index.css?v={% appVersion %}" type="text/css" />
-    {% render "metadata.liquid",
-      schema: schema,
-      page: page,
+    {% render "layout/metadata.liquid",
+      schema:schema,
+      page:page,
       globals:globals,
       post:post,
       title:title,
@@ -31,12 +31,16 @@
   <body>
     <div class="main-wrapper">
       <main>
-        {% render "header.liquid", globals:globals, page:page, nav:nav %}
+        {% render "layout/header.liquid",
+          globals:globals,
+          page:page,
+          nav:nav
+        %}
         <div class="default-wrapper">
           {{ content }}
         </div>
       </main>
-      {% render "footer.liquid",
+      {% render "layout/footer.liquid",
         page:page,
         nav:nav,
         updated:updated,

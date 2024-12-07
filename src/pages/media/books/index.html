@@ -11,7 +11,10 @@ schema: books
 <h2 class="page-title">Currently reading</h2>
 <p>Here's what I'm reading at the moment. I've finished <strong class="highlight-text">{{ currentBookCount }} books</strong> this year.</p>
 <p>{{ books.years | bookYearLinks }}</p>
-{% render "blocks/banners/rss.liquid", url: "/feeds/books", text: "Subscribe to my books feed or follow along on this page" %}
+{% render "blocks/banners/rss.liquid",
+  url: "/feeds/books",
+  text: "Subscribe to my books feed or follow along on this page"
+%}
 <hr />
 {% for book in bookData %}
   {% capture alt %}{{ book.title }} by {{ book.authors }}{% endcapture %}
@@ -41,9 +44,13 @@ schema: books
       {% endif %}
       {% if book.progress %}
         {%- assign percentage = book.progress | append: '%' -%}
-        {% render "media/progress-bar.liquid", percentage:percentage %}
+        {% render "media/progress-bar.liquid",
+          percentage:percentage
+        %}
       {% endif %}
-      {% if book.description %}<div class="description">{{ book.description | normalize_whitespace | markdown | htmlTruncate }}</div>{% endif %}
+      {% if book.description %}
+      <div class="description">{{ book.description | normalize_whitespace | markdown | htmlTruncate }}</div>
+      {% endif %}
     </div>
   </article>
 {% endfor %}

@@ -6,12 +6,12 @@
 
   & a {
     display: flex;
+  }
 
-    &.disabled svg {
-      cursor: not-allowed;
-      stroke: var(--gray-medium);
-      stroke-width: var(--stroke-width-default);
-    }
+  span svg {
+    cursor: not-allowed;
+    stroke: var(--gray-medium);
+    stroke-width: var(--stroke-width-default);
   }
 
   & p {
