@@ -1,3 +1,6 @@
+{%- assign pageCount = pagination.pages.size | default:0 -%}
+{%- assign hidePagination = pageCount <= 1 -%}
+{%- unless hidePagination -%}
 <script type="module" src="/assets/scripts/components/select-pagination.js?v={% appVersion %}"></script>
 <nav aria-label="Pagination" class="pagination">
   {%- assign prevHref = pagination.href.previous -%}
@@ -42,3 +45,4 @@
   </span>
   {% endif %}
 </nav>
+{%- endunless -%}

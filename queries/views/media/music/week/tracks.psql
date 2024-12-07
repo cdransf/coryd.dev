@@ -8,7 +8,8 @@ WITH track_stats AS (
     MAX(ol.listened_at) AS last_listened,
     ol.album_art,
     ol.artist_url,
-    MAX(COUNT(*)) OVER () AS most_played
+    MAX(COUNT(*)) OVER () AS most_played,
+    RANK() OVER (ORDER BY COUNT(*) DESC, MAX(ol.listened_at) DESC) AS rank
   FROM
     optimized_listens ol
   WHERE
@@ -28,10 +29,18 @@ SELECT
   last_listened,
   album_art,
   artist_url,
-  json_build_object('title', track_name, 'artist', artist_name, 'url', artist_url, 'plays', plays, 'alt', CONCAT(track_name, ' by ', artist_name), 'subtext', CONCAT(album_name, ' (', plays, ' plays)'), 'percentage', ROUND((plays::decimal / most_played) * 100, 2)) AS chart
+  json_build_object(
+    'title', track_name,
+    'artist', artist_name,
+    'url', artist_url,
+    'plays', plays,
+    'alt', CONCAT(track_name, ' by ', artist_name),
+    'subtext', CONCAT(album_name, ' (', plays, ' plays)'),
+    'percentage', ROUND((plays::decimal / most_played) * 100, 2),
+    'rank', rank
+  ) AS chart
 FROM
   track_stats
 ORDER BY
   plays DESC,
   last_listened DESC;
-

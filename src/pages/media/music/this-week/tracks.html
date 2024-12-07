@@ -3,7 +3,7 @@ title: Tracks this week
 description: These are tracks artists I've been listening to this week. Some of them are awesome.
 pagination:
   data: music.week.tracks
-  size: 24
+  size: 30
 permalink: "/music/this-week/tracks/{% if pagination.pageNumber > 0 %}{{ pagination.pageNumber }}/{% endif %}index.html"
 updated: "now"
 image: music.week.tracks[0].album_art
@@ -17,7 +17,6 @@ schema: music-period
 <hr />
 {% endif %}
 {% render "media/music/chart.liquid",
-  data:music.week.tracks,
-  count:10
+  data:pagination.items,
   pagination:pagination
 %}

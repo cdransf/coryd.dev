@@ -1,5 +1,3 @@
-{%- assign pageCount = pagination.pages.size | default:0 -%}
-{%- assign hidePagination = pageCount <= 1 -%}
 <div class="media-grid {{ shape }}">
   {%- assign loadingStrategy = loading | default:"lazy" -%}
   {%- for item in data limit:count -%}
@@ -46,8 +44,6 @@
     </a>
   {%- endfor -%}
 </div>
-{%- unless hidePagination -%}
-  {% render "nav/paginator.liquid",
-    pagination:pagination
-  %}
-{%- endunless -%}
+{% render "nav/paginator.liquid",
+  pagination:pagination
+%}
