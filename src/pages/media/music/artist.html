@@ -101,16 +101,13 @@ endcapture -%}
   <ul>
     {% for concert in artist.concerts %}
     {%- capture venue -%}
-    {% if concert.venue_name %}
-    {% if concert.venue_latitude and concert.venue_longitude %}
-    <a
-      href="https://www.openstreetmap.org/?mlat={{ concert.venue_latitude }}&mlon={{ concert.venue_longitude }}#map=18/{{ concert.venue_latitude }}/{{ concert.venue_longitude }}">
-        {{ concert.venue_name_short }}
-      </a>
-    {% else %}
+    {%- if concert.venue_name -%}
+    {%- if concert.venue_latitude and concert.venue_longitude -%}
+    <a href="https://www.openstreetmap.org/?mlat={{ concert.venue_latitude }}&mlon={{ concert.venue_longitude }}#map=18/{{ concert.venue_latitude }}/{{ concert.venue_longitude }}">{{ concert.venue_name_short }}</a>
+    {%- else -%}
     {{ concert.venue_name_short }}
-    {% endif %}
-    {% endif %}
+    {%- endif -%}
+    {%- endif -%}
     {%- endcapture -%}
     <li>
       On <strong class="highlight-text">{{ concert.date | date: "%B %e, %Y" }}</strong>
