@@ -153,7 +153,6 @@
   /* shadows */
   --box-shadow-media: inset 0 -85px 60px -40px var(--color-darkest);
   --box-shadow-text-toggle: inset 0 -120px 60px -60px var(--background-color);
-  --text-shadow-default: rgba(0, 0, 0, 0.7) 0px 0px 10px;
 
   /* modals */
   --modal-overlay-background: light-dark(#ffffffbf, #000000bf);

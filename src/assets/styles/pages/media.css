@@ -3,15 +3,15 @@
   flex-direction: column;
   gap: var(--spacing-sm);
 
-  & .title {
+  .title {
     font-size: var(--font-size-xl);
     line-height: var(--line-height-md);
   }
 
-  & .sub-meta {
+  .sub-meta {
     font-size: var(--font-size-sm);
 
-    & svg {
+    svg {
       width: var(--sizing-svg-sm);
       height: var(--sizing-svg-sm);
     }
@@ -21,7 +21,7 @@
 a:is(:hover, :active, :focus) .media-overlay::after {
   border: var(--border-default-hover);
   transition: border-color var(--transition-duration-default)
-        var(--transition-ease-in-out);
+    var(--transition-ease-in-out);
 }
 
 .media-overlay::after {

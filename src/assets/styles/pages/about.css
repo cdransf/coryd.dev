@@ -8,7 +8,7 @@
     --avatar-size: 24rem;
   }
 
-  & img {
+  img {
     width: var(--avatar-size);
     height: var(--avatar-size);
   }

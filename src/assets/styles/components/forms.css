@@ -3,12 +3,16 @@
   opacity: 0.5;
 }
 
-input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]),
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):not(
+    [type="checkbox"]
+  ),
 textarea {
   width: 100%;
 }
 
-input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]),
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):not(
+    [type="checkbox"]
+  ),
 textarea,
 select {
   color: var(--text-color);
@@ -19,7 +23,9 @@ select {
 }
 
 form,
-input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]),
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):not(
+    [type="checkbox"]
+  ),
 textarea {
   margin-bottom: var(--spacing-base);
 }
@@ -31,8 +37,17 @@ textarea {
 .search__form {
   margin-top: 0;
 
-  & .search__form--input::-webkit-search-cancel-button {
+  .search__form--input::-webkit-search-cancel-button {
     cursor: pointer;
+  }
+}
+
+label svg {
+  stroke: var(--accent-color);
+  cursor: pointer;
+
+  &:is(:hover, :focus, :active) {
+    stroke: var(--accent-color-hover);
   }
 }
 
@@ -54,7 +69,7 @@ textarea {
   list-style: none;
   display: none;
 
-  & li {
+  li {
     margin: var(--spacing-sm) 0;
 
     &:not(:last-child) {

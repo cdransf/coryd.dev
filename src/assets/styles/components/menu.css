@@ -1,10 +1,10 @@
 menu {
-  & .menu-primary {
+  .menu-primary {
     position: absolute;
     flex-direction: column;
     list-style: none;
+    margin-top: var(--spacing-base);
     padding: 0;
-    top: calc(var(--spacing-3xl) * 1.75);
     left: 0;
     width: 100%;
     z-index: 3;
@@ -16,20 +16,19 @@ menu {
       width: 100%;
       background: var(--background-color);
 
-      & a,
-      & .active {
+      a,
+      .active {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 100%;
         height: 100%;
       }
 
-      & a {
+      a {
         text-decoration: none;
       }
 
-      & .active {
+      .active {
         cursor: not-allowed;
       }
 
@@ -47,21 +46,21 @@ menu {
     display: none;
 
     &:checked + .menu-button-container {
-      & .menu-closed {
+      .menu-closed {
         display: none;
       }
 
-      & .menu-open {
+      .menu-open {
         display: block;
       }
     }
 
     &:not(:checked) + .menu-button-container {
-      & .menu-closed {
+      .menu-closed {
         display: block;
       }
 
-      & .menu-open {
+      .menu-open {
         display: none;
       }
     }
@@ -90,7 +89,7 @@ menu {
   .menu-button-container {
     display: unset;
 
-    & svg {
+    svg {
       cursor: pointer;
     }
   }
@@ -109,7 +108,7 @@ menu {
       & > li {
         background: none;
 
-        & a {
+        a {
           width: var(--sizing-svg-base);
           height: var(--sizing-svg-base);
         }

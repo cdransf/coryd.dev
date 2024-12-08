@@ -1,12 +1,14 @@
 {%- assign percentage = item.chart.percentage | append:"%" -%}
-<div class="item">
-  <div class="info">
+<div class="chart-item">
+  <div class="chart-item-info">
     <a class="title" href="{{ item.chart.url }}">{{ item.chart.title }}</a>
     {%- assign playsLabel = item.chart.plays | pluralize:"play" -%}
     <span class="subtext">{{ item.chart.artist }}</span>
     <span class="subtext">{{ item.chart.plays }} {{ playsLabel }}</span>
   </div>
-  {% render "media/progress-bar.liquid",
-    percentage:percentage
-  %}
+  <div class="chart-item-progress">
+    {% render "media/progress-bar.liquid",
+      percentage:percentage
+    %}
+  </div>
 </div>

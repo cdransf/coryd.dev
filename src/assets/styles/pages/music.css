@@ -1,5 +1,5 @@
 .artist-focus {
-  & img {
+  img {
     border: var(--border-default);
     aspect-ratio: var(--aspect-ratio-square);
     width: 100%;
@@ -10,7 +10,7 @@
     }
   }
 
-  & .artist-display {
+  .artist-display {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
@@ -22,13 +22,13 @@
     }
 
     @media screen and (max-width: 768px) {
-      & .media-meta {
+      .media-meta {
         margin-top: var(--spacing-base);
       }
     }
   }
 
-  & table + p {
+  table + p {
     font-size: var(--font-size-sm);
     margin: var(--spacing-base) 0 0;
   }

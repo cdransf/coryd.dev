@@ -9,11 +9,11 @@
   text-align: center;
   margin: var(--margin-vertical-base-horizontal-zero);
 
-  & p {
+  p {
     margin: 0;
   }
 
-  & .webring-navigation {
+  .webring-navigation {
     justify-content: center;
     gap: var(--spacing-sm);
   }

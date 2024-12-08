@@ -5,7 +5,7 @@
     overflow: hidden;
     margin: var(--margin-vertical-base-horizontal-zero);
 
-    & p:first-of-type {
+    p:first-of-type {
       margin-top: 0;
     }
 

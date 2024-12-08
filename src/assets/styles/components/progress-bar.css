@@ -6,7 +6,7 @@
   border-radius: var(--border-radius-full);
   overflow: hidden;
 
-  & .progress-bar {
+  .progress-bar {
     background-color: var(--accent-color);
     border-radius: var(--border-radius-full);
   }

@@ -92,7 +92,7 @@ ol {
   margin: var(--margin-vertical-base-horizontal-zero);
   padding-left: var(--spacing-base);
 
-  & li:not(:last-child) {
+  li:not(:last-child) {
     margin-bottom: var(--spacing-lg);
   }
 }
@@ -199,7 +199,7 @@ ol {
 
   color: var(--section-color);
 
-  & svg {
+  svg {
     stroke: var(--section-color);
   }
 }
@@ -216,7 +216,7 @@ a {
     border: var(--border-default);
   }
 
-  & svg {
+  svg {
     stroke: var(--accent-color);
   }
 
@@ -231,7 +231,7 @@ a {
         var(--transition-ease-in-out);
     }
 
-    & svg {
+    svg {
       stroke: var(--accent-color-hover);
     }
   }
@@ -299,23 +299,23 @@ article {
   &.intro {
     border-bottom: var(--border-gray);
 
-    & p {
+    p {
       margin-top: 0;
     }
   }
 
-  & h3 {
+  h3 {
     margin-top: 0;
   }
 
-  & .post-meta {
-    & svg {
+  .post-meta {
+    svg {
       stroke: var(--gray-dark);
       width: var(--sizing-svg-sm);
       height: var(--sizing-svg-sm);
     }
 
-    & time {
+    time {
       color: var(--gray-dark);
       font-size: var(--font-size-sm);
     }
@@ -406,7 +406,7 @@ td:first-of-type,
   align-items: center;
   justify-content: space-between;
 
-  & h1 {
+  h1 {
     margin: 0;
     padding: 0;
     white-space: nowrap;
@@ -449,12 +449,12 @@ footer {
 footer {
   margin: var(--sizing-3xl) auto 0;
 
-  & .updated {
+  .updated {
     font-size: var(--font-size-sm);
     text-align: center;
   }
 
-  & nav {
+  nav {
     &.social,
     &.sub-pages {
       display: flex;
@@ -468,12 +468,12 @@ footer {
       margin-bottom: var(--spacing-lg);
       width: 100%;
 
-      & .icon > span,
-      & .active > span {
+      .icon > span,
+      .active > span {
         display: none;
       }
 
-      & .active {
+      .active {
         display: flex;
       }
     }

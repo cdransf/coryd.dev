@@ -7,7 +7,7 @@
     grid-template-columns: var(--grid-columns-two);
   }
 
-  & article {
+  article {
     border-bottom: 0;
     margin-bottom: 0;
   }

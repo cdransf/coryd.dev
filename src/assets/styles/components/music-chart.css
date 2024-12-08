@@ -1,39 +1,30 @@
 .music-chart {
   margin: var(--margin-vertical-base-horizontal-zero);
 
-  & ol {
+  ol {
     padding-left: 0;
-
-    @media screen and (min-width: 768px) {
-      list-style-position: outside;
-    }
   }
 
-  & .item {
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: start;
+  .chart-item {
+    display: grid;
+    grid-template-columns: var(--grid-columns-one);
+    align-items: center;
 
     &:not(:last-of-type) {
       margin-bottom: var(--spacing-lg);
     }
 
     @media screen and (min-width: 768px) {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
+      grid-template-columns: var(--grid-columns-two);
     }
 
-    & .progress-bar-wrapper {
-      max-width: 40%;
-
-      @media screen and (max-width: 768px) {
+    @media screen and (max-width: 768px) {
+      .progress-bar-wrapper {
         margin-top: var(--spacing-sm);
       }
     }
 
-    & img {
+    img {
       width: calc(var(--sizing-3xl) * 1.5);
       height: calc(var(--sizing-3xl) * 1.5);
 
@@ -43,55 +34,58 @@
       }
     }
 
-    & .info {
+    .chart-item-info {
       display: flex;
       flex-direction: column;
       gap: var(--spacing-xs);
+    }
 
-      @media screen and (min-width: 768px) {
-        max-width: calc(75% - var(--sizing-lg));
+    .chart-item-progress {
+      display: flex;
+      justify-content: end;
+
+      .progress-bar-wrapper {
+        @media screen and (min-width: 768px) {
+          max-width: 80%;
+        }
       }
     }
 
-    & .meta {
+    .meta {
       display: flex;
       flex-direction: row;
       align-items: center;
       gap: var(--spacing-md);
 
       @media screen and (min-width: 768px) {
-        width: calc(75% - var(--sizing-lg));
+        padding-right: var(--spacing-base);
+      }
+
+      .meta-text {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        gap: var(--spacing-xs);
       }
     }
 
-    & .meta-text {
-      display: flex;
-      flex-direction: column;
-      justify-content: start;
-      gap: var(--spacing-xs);
-
-      @media screen and (min-width: 768px) {
-        max-width: 85%;
-      }
-    }
-
-    & .title {
+    .title {
       font-weight: var(--font-weight-bold);
     }
 
-    & .title,
-    & .subtext,
-    & time {
+    .title,
+    .subtext,
+    time {
       line-height: var(--line-height-md);
       word-break: break-word;
     }
 
-    & .subtext,
-    & time {
+    .subtext,
+    time {
       font-size: var(--font-size-sm);
     }
 
-    & time {
+    time {
       margin-top: var(--spacing-sm);
 
       @media screen and (min-width: 768px) {

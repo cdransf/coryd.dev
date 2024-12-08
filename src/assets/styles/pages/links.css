@@ -7,7 +7,7 @@
     grid-template-columns: var(--grid-columns-two);
   }
 
-  & .link-box {
+  .link-box {
     border: var(--border-gray);
     border-radius: var(--border-radius-slight);
     padding: var(--spacing-sm) var(--spacing-md);

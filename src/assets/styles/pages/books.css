@@ -1,11 +1,3 @@
-:is(.book-entry, .book-focus) .progress-bar-wrapper {
-  --progress-bar-width: 50%;
-
-  @media screen and (min-width: 768px) {
-    --progress-bar-width: 75%;
-  }
-}
-
 :is(.book-entry, .book-focus) img {
   height: auto;
   aspect-ratio: var(--aspect-ratio-vertical);
@@ -28,11 +20,11 @@
     align-items: start;
   }
 
-  & img {
+  img {
     max-width: calc(var(--sizing-3xl) * 4);
   }
 
-  & .media-meta {
+  .media-meta {
     margin-top: var(--sizing-base);
     align-items: center;
 
@@ -41,12 +33,11 @@
       align-items: start;
     }
 
-    & .description p:last-of-type {
+    .description p:last-of-type {
       margin-bottom: 0;
     }
 
-    & .progress-bar-wrapper {
-      max-width: var(--progress-bar-width);
+    .progress-bar-wrapper {
       margin-bottom: 0;
 
       @media screen and (min-width: 768px) {
@@ -57,7 +48,7 @@
 }
 
 .book-focus {
-  & .book-display {
+  .book-display {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -69,21 +60,17 @@
       align-items: start;
     }
 
-    & img {
+    img {
       border: var(--border-default);
     }
 
-    & .media-meta {
+    .media-meta {
       width: 100%;
       align-items: center;
 
       @media screen and (min-width: 768px) {
         width: auto;
         align-items: start;
-      }
-
-      & .progress-bar-wrapper {
-        max-width: var(--progress-bar-width);
       }
     }
   }

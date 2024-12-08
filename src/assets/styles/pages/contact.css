@@ -7,17 +7,17 @@
     grid-template-columns: var(--grid-columns-two);
   }
 
-  & .hp,
-  & label > span {
+  .hp,
+  label > span {
     display: none;
   }
 
-  & textarea {
+  textarea {
     height: calc(var(--sizing-3xl) * 5);
   }
 
-  & .column.description {
-    & p:first-of-type {
+  .column.description {
+    p:first-of-type {
       margin-top: 0;
     }
 
@@ -30,7 +30,7 @@
 .contact-success-wrapper {
   text-align: center;
 
-  & h2 {
+  h2 {
     margin: 0;
   }
 }

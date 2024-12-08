@@ -2,14 +2,10 @@
   display: grid;
   gap: var(--spacing-sm);
 
-  & ~ .pagination {
-    margin-top: var(--spacing-base);
-  }
-
   &.poster {
     grid-template-columns: var(--grid-poster);
 
-    & a {
+    a {
       aspect-ratio: var(--aspect-ratio-banner);
     }
   }
@@ -17,7 +13,7 @@
   &.square {
     grid-template-columns: var(--grid-square);
 
-    & a {
+    a {
       aspect-ratio: var(--aspect-ratio-square);
     }
   }
@@ -25,7 +21,7 @@
   &.vertical {
     grid-template-columns: var(--grid-vertical);
 
-    & a {
+    a {
       aspect-ratio: var(--aspect-ratio-vertical);
     }
   }
@@ -35,26 +31,25 @@
     height: auto;
   }
 
-  & .item {
+  .item {
     position: relative;
   }
 
-  & .meta-text {
+  .meta-text {
     color: var(--color-lightest);
     position: absolute;
     z-index: 2;
     padding: 0 var(--spacing-sm);
     bottom: var(--spacing-sm);
 
-    & .header,
-    & .subheader {
+    .header,
+    .subheader {
       color: var(--color-lightest);
       font-size: var(--font-size-sm);
       line-height: var(--line-height-md);
-      text-shadow: var(--text-shadow-default);
     }
 
-    & .header {
+    .header {
       font-weight: var(--font-weight-bold);
       display: -webkit-box;
       -webkit-box-orient: vertical;

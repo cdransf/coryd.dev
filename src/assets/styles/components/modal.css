@@ -49,15 +49,6 @@
 
 .modal-toggle,
 .modal-close {
-  cursor: pointer;
   display: inline-flex;
   vertical-align: middle;
-
-  svg {
-    stroke: var(--accent-color);
-
-    &:is(:hover, :focus, :active) {
-      stroke: var(--accent-color-hover);
-    }
-  }
 }
