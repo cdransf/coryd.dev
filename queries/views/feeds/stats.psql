@@ -13,7 +13,7 @@ track_stats AS (
 show_stats AS (
     SELECT
         COUNT(DISTINCT e.show) AS show_count,
-        TO_CHAR(COUNT(*), 'FM999,999,999') AS episode_count
+        TO_CHAR(SUM(e.plays), 'FM999,999,999') AS episode_count
     FROM episodes e
 ),
 post_stats AS (
@@ -34,9 +34,9 @@ book_stats AS (
 ),
 movie_stats AS (
     SELECT
-        TO_CHAR(COUNT(*), 'FM999,999,999') AS movie_count
-    FROM optimized_movies
-    WHERE last_watched IS NOT NULL
+        TO_CHAR(SUM(m.plays), 'FM999,999,999') AS movie_count
+    FROM optimized_movies m
+    WHERE m.last_watched IS NOT NULL
 ),
 genre_stats AS (
     SELECT
