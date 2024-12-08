@@ -6,10 +6,37 @@ description: Some basic stats about my activity on this site.
 <h2 class="page-title">Stats</h2>
 <p>I share the <a href="/music">music I listen to</a>, <a href="/music/concerts">concerts I attend</a>, <a href="watching">shows and movies I watch</a>, <a href="books">books I read</a>, <a href="/posts">posts I write</a> and <a href="/links">links I enjoy</a> on this site. I have some basic counts of each below.</p>
 <hr />
-<p class="music">I've listened to <strong class="highlight-text">{{ stats.listen_count }}</strong> tracks by <strong class="highlight-text">{{ stats.artist_count }}</strong> artists across <strong class="highlight-text">{{ stats.genre_count }}</strong> genres.</p>
-<p class="concerts">I've been to <strong class="highlight-text">{{ stats.concert_count }}</strong> concerts at <strong class="highlight-text">{{ stats.venue_count }}</strong> different venues.</p>
-<p class="tv">I've watched <strong class="highlight-text">{{ stats.episode_count }}</strong> episodes of <strong class="highlight-text">{{ stats.show_count }}</strong> shows (some more than once).</p>
-<p class="movies">I've watched <strong class="highlight-text">{{ stats.movie_count }}</strong> movies (some more than once).</p>
-<p class="books">I've read <strong class="highlight-text">{{ stats.book_count }}</strong> books.</p>
-<p class="article">I've written <strong class="highlight-text">{{ stats.post_count }}</strong> posts.</p>
-<p class="link">I've shared <strong class="highlight-text">{{ stats.link_count }}</strong> links.</p>
+<p class="music">I've listened to <strong class="highlight-text">{{ stats.listen_count }}</strong> track(s) by <strong class="highlight-text">{{ stats.artist_count }}</strong> artist(s) across <strong class="highlight-text">{{ stats.genre_count }}</strong> genre(s).</p>
+<p class="concerts">I've been to <strong class="highlight-text">{{ stats.concert_count }}</strong> concert(s) at <strong class="highlight-text">{{ stats.venue_count }}</strong> different venues.</p>
+<p class="tv">I've watched <strong class="highlight-text">{{ stats.episode_count }}</strong> episode(s) of <strong class="highlight-text">{{ stats.show_count }}</strong> shows (some more than once).</p>
+<p class="movies">I've watched <strong class="highlight-text">{{ stats.movie_count }}</strong> movie(s) (some more than once).</p>
+<p class="books">I've read <strong class="highlight-text">{{ stats.book_count }}</strong> book(s).</p>
+<p class="article">I've written <strong class="highlight-text">{{ stats.post_count }}</strong> post(s).</p>
+<p class="link">I've shared <strong class="highlight-text">{{ stats.link_count }}</strong> link(s).</p>
+<hr />
+{% for year_stats in stats.yearly_breakdown %}
+<h3>{{ year_stats.year }}</h3>
+<ul>
+  {% if year_stats.listen_count %}
+  <li class="music">Listened to <strong class="highlight-text">{{ year_stats.listen_count }}</strong> track(s) by <strong class="highlight-text">{{ year_stats.artist_count }}</strong> artist(s) across <strong class="highlight-text">{{ year_stats.genre_count }}</strong> genre(s).</li>
+  {% endif %}
+  {% if year_stats.concert_count %}
+  <li class="concerts">Attended <strong class="highlight-text">{{ year_stats.concert_count }}</strong> concert(s) at <strong class="highlight-text">{{ year_stats.venue_count }}</strong> different venues.</li>
+  {% endif %}
+  {% if year_stats.episode_count %}
+  <li class="tv">Watched <strong class="highlight-text">{{ year_stats.episode_count }}</strong> episode(s) of <strong class="highlight-text">{{ year_stats.show_count }}</strong> shows (some more than once).</li>
+  {% endif %}
+  {% if year_stats.movie_count %}
+  <li class="movies">Watched <strong class="highlight-text">{{ year_stats.movie_count }}</strong> movie(s) (some more than once).</li>
+  {% endif %}
+  {% if year_stats.book_count %}
+  <li class="books">Read <strong class="highlight-text">{{ year_stats.book_count }}</strong> book(s).</li>
+  {% endif %}
+  {% if year_stats.post_count %}
+  <li class="article">Wrote <strong class="highlight-text">{{ year_stats.post_count }}</strong> post(s).</li>
+  {% endif %}
+  {% if year_stats.link_count %}
+  <li class="link">Shared <strong class="highlight-text">{{ year_stats.link_count }}</strong> link(s).</li>
+  {% endif %}
+</ul>
+{% endfor %}

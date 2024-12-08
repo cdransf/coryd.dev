@@ -1,48 +1,14 @@
 CREATE OR REPLACE VIEW optimized_stats AS
 WITH artist_stats AS (
     SELECT
-        TO_CHAR(COUNT(*), 'FM999,999,999') AS artist_count
-    FROM artists
-    WHERE total_plays > 0
+        TO_CHAR(COUNT(DISTINCT artist_name), 'FM999,999,999') AS artist_count
+    FROM optimized_listens
+    WHERE artist_name IS NOT NULL
 ),
 track_stats AS (
     SELECT
         TO_CHAR(COUNT(*), 'FM999,999,999') AS listen_count
-    FROM listens
-),
-show_stats AS (
-    SELECT
-        COUNT(DISTINCT e.show) AS show_count,
-        TO_CHAR(SUM(e.plays), 'FM999,999,999') AS episode_count
-    FROM episodes e
-),
-post_stats AS (
-    SELECT
-        COUNT(*) AS post_count
-    FROM optimized_posts
-),
-link_stats AS (
-    SELECT
-        COUNT(*) AS link_count
-    FROM optimized_links
-),
-book_stats AS (
-    SELECT
-        TO_CHAR(COUNT(*), 'FM999,999,999') AS book_count
-    FROM optimized_books
-    WHERE LOWER(status) = 'finished'
-),
-movie_stats AS (
-    SELECT
-        TO_CHAR(SUM(m.plays), 'FM999,999,999') AS movie_count
-    FROM optimized_movies m
-    WHERE m.last_watched IS NOT NULL
-),
-genre_stats AS (
-    SELECT
-        COUNT(*) AS genre_count
-    FROM genres
-    WHERE total_plays > 0
+    FROM optimized_listens
 ),
 concert_stats AS (
     SELECT
@@ -51,29 +17,174 @@ concert_stats AS (
 ),
 venue_stats AS (
     SELECT
-        TO_CHAR(COUNT(*), 'FM999,999,999') AS venue_count
-    FROM venues
+        TO_CHAR(COUNT(DISTINCT venue), 'FM999,999,999') AS venue_count
+    FROM concerts
+),
+yearly_data AS (
+    SELECT
+        EXTRACT(YEAR FROM e.last_watched_at) AS year,
+        0 AS artist_count,
+        0 AS listen_count,
+        0 AS genre_count,
+        COUNT(DISTINCT e.show) AS show_count,
+        COUNT(*) AS episode_count,
+        0 AS post_count,
+        0 AS link_count,
+        0 AS book_count,
+        0 AS movie_count,
+        0 AS concert_count,
+        0 AS venue_count
+    FROM episodes e
+    GROUP BY EXTRACT(YEAR FROM e.last_watched_at)
+    HAVING EXTRACT(YEAR FROM e.last_watched_at) >= 2000
+    UNION ALL
+    SELECT
+        EXTRACT(YEAR FROM p.date) AS year,
+        0 AS artist_count,
+        0 AS listen_count,
+        0 AS genre_count,
+        0 AS show_count,
+        0 AS episode_count,
+        COUNT(*) AS post_count,
+        0 AS link_count,
+        0 AS book_count,
+        0 AS movie_count,
+        0 AS concert_count,
+        0 AS venue_count
+    FROM optimized_posts p
+    GROUP BY EXTRACT(YEAR FROM p.date)
+    HAVING EXTRACT(YEAR FROM p.date) >= 2000
+    UNION ALL
+    SELECT
+        EXTRACT(YEAR FROM o.date) AS year,
+        0 AS artist_count,
+        0 AS listen_count,
+        0 AS genre_count,
+        0 AS show_count,
+        0 AS episode_count,
+        0 AS post_count,
+        COUNT(*) AS link_count,
+        0 AS book_count,
+        0 AS movie_count,
+        0 AS concert_count,
+        0 AS venue_count
+    FROM optimized_links o
+    GROUP BY EXTRACT(YEAR FROM o.date)
+    HAVING EXTRACT(YEAR FROM o.date) >= 2000
+    UNION ALL
+    SELECT
+        EXTRACT(YEAR FROM b.date_finished) AS year,
+        0 AS artist_count,
+        0 AS listen_count,
+        0 AS genre_count,
+        0 AS show_count,
+        0 AS episode_count,
+        0 AS post_count,
+        0 AS link_count,
+        COUNT(*) AS book_count,
+        0 AS movie_count,
+        0 AS concert_count,
+        0 AS venue_count
+    FROM optimized_books b
+    WHERE LOWER(b.status) = 'finished'
+    GROUP BY EXTRACT(YEAR FROM b.date_finished)
+    HAVING EXTRACT(YEAR FROM b.date_finished) >= 2000
+    UNION ALL
+    SELECT
+        EXTRACT(YEAR FROM m.last_watched) AS year,
+        0 AS artist_count,
+        0 AS listen_count,
+        0 AS genre_count,
+        0 AS show_count,
+        0 AS episode_count,
+        0 AS post_count,
+        0 AS link_count,
+        0 AS book_count,
+        COUNT(*) AS movie_count,
+        0 AS concert_count,
+        0 AS venue_count
+    FROM optimized_movies m
+    GROUP BY EXTRACT(YEAR FROM m.last_watched)
+    HAVING EXTRACT(YEAR FROM m.last_watched) >= 2000
+    UNION ALL
+    SELECT
+        EXTRACT(YEAR FROM TO_TIMESTAMP(l.listened_at)) AS year,
+        COUNT(DISTINCT l.artist_name) AS artist_count,
+        COUNT(l.id) AS listen_count,
+        COUNT(DISTINCT l.genre_name) AS genre_count,
+        0 AS show_count,
+        0 AS episode_count,
+        0 AS post_count,
+        0 AS link_count,
+        0 AS book_count,
+        0 AS movie_count,
+        0 AS concert_count,
+        0 AS venue_count
+    FROM optimized_listens l
+    GROUP BY EXTRACT(YEAR FROM TO_TIMESTAMP(l.listened_at))
+    HAVING EXTRACT(YEAR FROM TO_TIMESTAMP(l.listened_at)) >= 2000
+    UNION ALL
+    SELECT
+        EXTRACT(YEAR FROM c.date) AS year,
+        0 AS artist_count,
+        0 AS listen_count,
+        0 AS genre_count,
+        0 AS show_count,
+        0 AS episode_count,
+        0 AS post_count,
+        0 AS link_count,
+        0 AS book_count,
+        0 AS movie_count,
+        COUNT(*) AS concert_count,
+        COUNT(DISTINCT c.venue) AS venue_count
+    FROM concerts c
+    GROUP BY EXTRACT(YEAR FROM c.date)
+    HAVING EXTRACT(YEAR FROM c.date) >= 2000
+),
+aggregated_yearly_stats AS (
+    SELECT
+        year,
+        SUM(artist_count) AS artist_count,
+        SUM(listen_count) AS listen_count,
+        SUM(genre_count) AS genre_count,
+        SUM(show_count) AS show_count,
+        SUM(episode_count) AS episode_count,
+        SUM(post_count) AS post_count,
+        SUM(link_count) AS link_count,
+        SUM(book_count) AS book_count,
+        SUM(movie_count) AS movie_count,
+        SUM(concert_count) AS concert_count,
+        SUM(venue_count) AS venue_count
+    FROM yearly_data
+    GROUP BY year
+    ORDER BY year DESC
 )
 SELECT
-    artist_stats.artist_count,
-    track_stats.listen_count,
-    show_stats.show_count,
-    show_stats.episode_count,
-    post_stats.post_count,
-    link_stats.link_count,
-    book_stats.book_count,
-    movie_stats.movie_count,
-    genre_stats.genre_count,
-    concert_stats.concert_count,
-    venue_stats.venue_count
-FROM
-    artist_stats,
-    track_stats,
-    show_stats,
-    post_stats,
-    link_stats,
-    book_stats,
-    movie_stats,
-    genre_stats,
-    concert_stats,
-    venue_stats;
+    (SELECT artist_count FROM artist_stats) AS artist_count,
+    (SELECT listen_count FROM track_stats) AS listen_count,
+    (SELECT concert_count FROM concert_stats) AS concert_count,
+    (SELECT venue_count FROM venue_stats) AS venue_count,
+    (SELECT TO_CHAR(COUNT(DISTINCT e.show), 'FM999,999,999') FROM episodes e) AS show_count,
+    (SELECT TO_CHAR(COUNT(*), 'FM999,999,999') FROM episodes e) AS episode_count,
+    (SELECT TO_CHAR(COUNT(*), 'FM999,999,999') FROM optimized_posts) AS post_count,
+    (SELECT TO_CHAR(COUNT(*), 'FM999,999,999') FROM optimized_links) AS link_count,
+    (SELECT TO_CHAR(COUNT(*), 'FM999,999,999') FROM optimized_books WHERE LOWER(status) = 'finished') AS book_count,
+    (SELECT TO_CHAR(COUNT(*), 'FM999,999,999') FROM optimized_movies WHERE last_watched IS NOT NULL) AS movie_count,
+    (SELECT TO_CHAR(COUNT(DISTINCT genre_name), 'FM999,999,999') FROM optimized_listens WHERE genre_name IS NOT NULL) AS genre_count,
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'year', ys.year,
+            'artist_count', CASE WHEN ys.artist_count > 0 THEN TO_CHAR(ys.artist_count, 'FM999,999,999') ELSE NULL END,
+            'listen_count', CASE WHEN ys.listen_count > 0 THEN TO_CHAR(ys.listen_count, 'FM999,999,999') ELSE NULL END,
+            'genre_count', CASE WHEN ys.genre_count > 0 THEN TO_CHAR(ys.genre_count, 'FM999,999,999') ELSE NULL END,
+            'show_count', CASE WHEN ys.show_count > 0 THEN TO_CHAR(ys.show_count, 'FM999,999,999') ELSE NULL END,
+            'episode_count', CASE WHEN ys.episode_count > 0 THEN TO_CHAR(ys.episode_count, 'FM999,999,999') ELSE NULL END,
+            'post_count', CASE WHEN ys.post_count > 0 THEN TO_CHAR(ys.post_count, 'FM999,999,999') ELSE NULL END,
+            'link_count', CASE WHEN ys.link_count > 0 THEN TO_CHAR(ys.link_count, 'FM999,999,999') ELSE NULL END,
+            'book_count', CASE WHEN ys.book_count > 0 THEN TO_CHAR(ys.book_count, 'FM999,999,999') ELSE NULL END,
+            'movie_count', CASE WHEN ys.movie_count > 0 THEN TO_CHAR(ys.movie_count, 'FM999,999,999') ELSE NULL END,
+            'concert_count', CASE WHEN ys.concert_count > 0 THEN TO_CHAR(ys.concert_count, 'FM999,999,999') ELSE NULL END,
+            'venue_count', CASE WHEN ys.venue_count > 0 THEN TO_CHAR(ys.venue_count, 'FM999,999,999') ELSE NULL END
+        )
+    ) AS yearly_breakdown
+FROM aggregated_yearly_stats ys;

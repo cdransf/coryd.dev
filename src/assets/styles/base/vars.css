@@ -39,7 +39,7 @@
   --accent-color-hover: light-dark(var(--blue-600), var(--blue-100));
   --accent-color-active: light-dark(var(--blue-600), var(--blue-100));
 
-  --brand-apple: light-dark(#973999, #ffb900);
+  --brand-fastmail: light-dark(#0067b9, #ffc107);
   --brand-buy-me-a-coffee: light-dark(#0d0c22, #ffdd00);
   --brand-github: light-dark(#333, #f5f5f5);
   --brand-mastodon: light-dark(#563acc, #858afa);
