@@ -43,6 +43,16 @@ genre_stats AS (
         COUNT(*) AS genre_count
     FROM genres
     WHERE total_plays > 0
+),
+concert_stats AS (
+    SELECT
+        TO_CHAR(COUNT(*), 'FM999,999,999') AS concert_count
+    FROM concerts
+),
+venue_stats AS (
+    SELECT
+        TO_CHAR(COUNT(*), 'FM999,999,999') AS venue_count
+    FROM venues
 )
 SELECT
     artist_stats.artist_count,
@@ -53,7 +63,9 @@ SELECT
     link_stats.link_count,
     book_stats.book_count,
     movie_stats.movie_count,
-    genre_stats.genre_count
+    genre_stats.genre_count,
+    concert_stats.concert_count,
+    venue_stats.venue_count
 FROM
     artist_stats,
     track_stats,
@@ -62,4 +74,6 @@ FROM
     link_stats,
     book_stats,
     movie_stats,
-    genre_stats;
+    genre_stats,
+    concert_stats,
+    venue_stats;
