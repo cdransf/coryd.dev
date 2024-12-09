@@ -1,0 +1,16 @@
+SELECT
+    l.artist_name,
+    l.album_name,
+    TO_CHAR(COUNT(l.id), 'FM999,999,999') AS total_listens
+FROM
+    optimized_listens l
+WHERE
+    EXTRACT(YEAR FROM TO_TIMESTAMP(l.listened_at)) = EXTRACT(YEAR FROM CURRENT_DATE)
+    AND l.artist_name IS NOT NULL
+    AND l.album_name IS NOT NULL
+GROUP BY
+    l.artist_name,
+    l.album_name
+ORDER BY
+    COUNT(l.id) DESC
+LIMIT 10;
