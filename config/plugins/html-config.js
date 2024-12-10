@@ -17,6 +17,7 @@ export const htmlConfig = (eleventyConfig) => {
         sortAttributes: true,
         sortClassName: true,
         useShortDoctype: true,
+        processScripts: ["application/ld+json"],
       });
     }
 

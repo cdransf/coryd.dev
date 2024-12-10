@@ -31,4 +31,11 @@ export default {
 
     return tzDate.toISOString();
   },
+  stringToISO: (dateString) => {
+    const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) return "";
+
+    return date.toISOString();
+  },
 };

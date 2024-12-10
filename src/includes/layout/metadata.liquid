@@ -6,7 +6,9 @@
   {%- when "blog" -%}
     {%- assign pageTitle = post.title -%}
     {%- assign pageDescription = post.description | markdown | strip_html -%}
-    {%- assign ogImage = globals.cdn_url | append:post.image -%}
+    {% if post.image %}
+      {%- assign ogImage = globals.cdn_url | append:post.image -%}
+    {% endif %}
   {%- when "music", "music-index", "music-period" -%}
     {%- if page.title -%}
       {%- assign pageTitle = "Music / " | append:page.title -%}
@@ -90,6 +92,36 @@
 <meta property="og:image" content="{{ ogImage }}?class=w800" />
 <meta name="theme-color" content="{{ globals.theme_color }}" />
 <meta name="fediverse:creator" content="{{ globals.mastodon }}" />
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "{{ fullUrl }}",
+        "url": "{{ fullUrl }}",
+        "name": "{{ pageTitle }}",
+        "description": "{{ pageDescription }}",
+        "inLanguage": "{{ globals.lang }}"
+      }
+      {%- if schema == 'blog' -%}
+        , {
+          "@type": "BlogPosting",
+          "mainEntityOfPage": { "@type": "WebPage" },
+          "isPartOf": { "@id": "{{ globals.url }}#website" },
+          "@id": "{{ fullUrl }}",
+          "headline": "{{ pageTitle }}",
+          "description": "{{ pageDescription }}",
+          "image": "{{ ogImage }}",
+          "inLanguage": "{{ globals.lang }}",
+          "publisher": { "@type": "{{ globals.site_type }}", "name": "{{ globals.site_name }}", "url": "{{ globals.url }}" },
+          "author": { "@type": "Person", "name": "{{ globals.site_name }}", "url": "{{ globals.url }}" },
+          "datePublished": "{{ post.date | stringToISO }}"
+        }
+      {%- endif -%}
+    ]
+  }
+</script>
 <meta name="generator" content="11ty" />
 <meta name="robots" content="noai, noimageai" />
 <link href="{{ globals.cdn_url }}{{ globals.avatar_transparent }}?class=w50&v={% appVersion %}" rel="icon" sizes="any" />
