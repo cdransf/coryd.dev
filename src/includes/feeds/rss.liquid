@@ -23,8 +23,7 @@
       <item>
         <title><![CDATA[
           {%- if entry.feed -%}
-            {{ entry.feed.title }}{% if entry.feed.artist and entry.feed.artist.name %} via {{ entry.feed.artist.name }}{% endif %}
-            {% if entry.rating %} ({{ entry.rating }}){% endif %}
+            {{ entry.feed.title }}
           {%- else -%}
             {{ entry.syndication.title }}
           {%- endif -%}
