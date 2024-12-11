@@ -12,7 +12,7 @@ schema: books
 <p>Here's what I'm reading at the moment. I've finished <strong class="highlight-text">{{ currentBookCount }} books</strong> this year.</p>
 <p>{{ books.years | bookYearLinks }}</p>
 {% render "blocks/banners/rss.liquid",
-  url: "/feeds/books",
+  url: "/feeds/books.xml",
   text: "Subscribe to my books feed or follow along on this page"
 %}
 <hr />

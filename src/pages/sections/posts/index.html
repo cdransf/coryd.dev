@@ -5,6 +5,15 @@ pagination:
   size: 15
 permalink: "/posts/{% if pagination.pageNumber > 0 %}{{ pagination.pageNumber }}/{% endif %}index.html"
 ---
+{% if pagination.pageNumber == 0 %}
+<h2 class="page-title">Posts</h2>
+<p>These are all of my blog posts on this site (I like some more than others).</p>
+{% render "blocks/banners/rss.liquid",
+  url: "/feeds/posts.xml",
+  text: "Subscribe to my posts feed or follow along on this page"
+%}
+<hr />
+{% endif %}
 {% for post in pagination.items %}
 <article>
   <div class="post-meta">
