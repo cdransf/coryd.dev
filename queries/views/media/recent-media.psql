@@ -1,0 +1,248 @@
+CREATE OR REPLACE VIEW optimized_recent_media AS
+WITH ordered_artists AS (
+    SELECT
+        wa.artist_name,
+        wa.artist_art,
+        wa.artist_url,
+        wa.plays,
+        json_build_object(
+            'title', wa.artist_name,
+            'image', wa.artist_art,
+            'url', wa.artist_url,
+            'alt', CONCAT(wa.plays, ' plays of ', wa.artist_name),
+            'subtext', CONCAT(wa.plays, ' plays')
+        ) AS grid
+    FROM week_artists wa
+    ORDER BY wa.plays DESC, wa.artist_name ASC
+),
+ordered_albums AS (
+    SELECT
+        wa.album_name,
+        wa.album_art,
+        wa.artist_name,
+        wa.artist_url,
+        wa.plays,
+        json_build_object(
+            'title', wa.album_name,
+            'image', wa.album_art,
+            'url', wa.artist_url,
+            'alt', CONCAT(wa.album_name, ' by ', wa.artist_name, ' (', wa.plays, ' plays)'),
+            'subtext', CONCAT(wa.artist_name, ' (', wa.plays, ' plays)')
+        ) AS grid
+    FROM week_albums wa
+    ORDER BY wa.plays DESC, wa.album_name ASC
+),
+recent_music AS (
+    SELECT * FROM (
+        (
+            SELECT
+                artist_name AS title,
+                artist_art AS image,
+                artist_url AS url,
+                'artist' AS type,
+                1 AS rank,
+                grid
+            FROM ordered_artists
+            LIMIT 1
+        )
+        UNION ALL
+        (
+            SELECT
+                album_name AS title,
+                album_art AS image,
+                artist_url AS url,
+                'album' AS type,
+                2 AS rank,
+                grid
+            FROM ordered_albums
+            LIMIT 1
+        )
+        UNION ALL
+        (
+            SELECT
+                artist_name AS title,
+                artist_art AS image,
+                artist_url AS url,
+                'artist' AS type,
+                3 AS rank,
+                grid
+            FROM ordered_artists
+            OFFSET 1 LIMIT 1
+        )
+        UNION ALL
+        (
+            SELECT
+                album_name AS title,
+                album_art AS image,
+                artist_url AS url,
+                'album' AS type,
+                4 AS rank,
+                grid
+            FROM ordered_albums
+            OFFSET 1 LIMIT 1
+        )
+    ) AS recent_music_subquery
+),
+recent_watched_read AS (
+    SELECT * FROM (
+        (
+            SELECT
+                om.title,
+                om.image,
+                om.url,
+                'movie' AS type,
+                1 AS rank,
+                json_build_object(
+                    'title', om.title,
+                    'url', om.url,
+                    'image', om.image,
+                    'backdrop', om.backdrop,
+                    'alt', CONCAT('Poster from ', om.title, ' (', om.year, ')'),
+                    'subtext', CASE WHEN om.rating IS NOT NULL THEN
+                        CONCAT(om.rating, ' (', om.year, ')')
+                    ELSE
+                        CONCAT('(', om.year, ')')
+                    END
+                ) AS grid
+            FROM optimized_movies om
+            WHERE om.last_watched IS NOT NULL
+            ORDER BY om.last_watched DESC, om.title ASC
+            LIMIT 1
+        )
+        UNION ALL
+        (
+            SELECT
+                os.title,
+                os.image,
+                os.url,
+                'show' AS type,
+                2 AS rank,
+                json_build_object(
+                    'title', os.title,
+                    'image', os.image,
+                    'url', os.url,
+                    'alt', CONCAT('Poster from ', os.title),
+                    'subtext', (
+                        SELECT CONCAT('S', e.season_number, 'E', e.episode_number)
+                        FROM episodes e
+                        WHERE e.show = os.id
+                        ORDER BY e.last_watched_at DESC, e.season_number DESC, e.episode_number DESC
+                        LIMIT 1
+                    )
+                ) AS grid
+            FROM optimized_shows os
+            WHERE os.last_watched_at IS NOT NULL
+            ORDER BY os.last_watched_at DESC, os.title ASC
+            LIMIT 1
+        )
+        UNION ALL
+        (
+            SELECT
+                ob.title,
+                ob.image,
+                ob.url,
+                'book' AS type,
+                3 AS rank,
+                json_build_object(
+                    'title', CONCAT(ob.title, ' by ', ob.author),
+                    'image', ob.image,
+                    'url', ob.url,
+                    'alt', CONCAT('Book cover from ', ob.title, ' by ', ob.author),
+                    'subtext', CASE WHEN ob.rating IS NOT NULL THEN
+                        ob.rating
+                    ELSE
+                        NULL
+                    END
+                ) AS grid
+            FROM optimized_books ob
+            WHERE ob.status = 'finished'
+            ORDER BY ob.date_finished DESC, ob.title ASC
+            LIMIT 1
+        )
+        UNION ALL
+        (
+            SELECT
+                om.title,
+                om.image,
+                om.url,
+                'movie' AS type,
+                4 AS rank,
+                json_build_object(
+                    'title', om.title,
+                    'url', om.url,
+                    'image', om.image,
+                    'backdrop', om.backdrop,
+                    'alt', CONCAT('Poster from ', om.title, ' (', om.year, ')'),
+                    'subtext', CASE WHEN om.rating IS NOT NULL THEN
+                        CONCAT(om.rating, ' (', om.year, ')')
+                    ELSE
+                        CONCAT('(', om.year, ')')
+                    END
+                ) AS grid
+            FROM optimized_movies om
+            WHERE om.last_watched IS NOT NULL
+            ORDER BY om.last_watched DESC, om.title ASC
+            OFFSET 1 LIMIT 1
+        )
+        UNION ALL
+        (
+            SELECT
+                os.title,
+                os.image,
+                os.url,
+                'show' AS type,
+                5 AS rank,
+                json_build_object(
+                    'title', os.title,
+                    'image', os.image,
+                    'url', os.url,
+                    'alt', CONCAT('Poster from ', os.title),
+                    'subtext', (
+                        SELECT CONCAT('S', e.season_number, 'E', e.episode_number)
+                        FROM episodes e
+                        WHERE e.show = os.id
+                        ORDER BY e.last_watched_at DESC, e.season_number DESC, e.episode_number DESC
+                        LIMIT 1
+                    )
+                ) AS grid
+            FROM optimized_shows os
+            WHERE os.last_watched_at IS NOT NULL
+            ORDER BY os.last_watched_at DESC, os.title ASC
+            OFFSET 1 LIMIT 1
+        )
+        UNION ALL
+        (
+            SELECT
+                ob.title,
+                ob.image,
+                ob.url,
+                'book' AS type,
+                6 AS rank,
+                json_build_object(
+                    'title', CONCAT(ob.title, ' by ', ob.author),
+                    'image', ob.image,
+                    'url', ob.url,
+                    'alt', CONCAT('Book cover from ', ob.title, ' by ', ob.author),
+                    'subtext', CASE WHEN ob.rating IS NOT NULL THEN
+                        ob.rating
+                    ELSE
+                        NULL
+                    END
+                ) AS grid
+            FROM optimized_books ob
+            WHERE ob.status = 'finished'
+            ORDER BY ob.date_finished DESC, ob.title ASC
+            OFFSET 1 LIMIT 1
+        )
+    ) AS recent_watched_read_subquery
+)
+SELECT json_build_object(
+    'recentMusic', (
+        SELECT json_agg(m.* ORDER BY m.rank)
+        FROM recent_music m
+    ),
+    'recentWatchedRead', (
+        SELECT json_agg(w.* ORDER BY w.rank)
+        FROM recent_watched_read w
+    )
+) AS recent_activity;

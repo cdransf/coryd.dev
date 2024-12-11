@@ -199,6 +199,10 @@ ol {
 
   color: var(--section-color);
 
+  a {
+    color: var(--section-color);
+  }
+
   svg {
     stroke: var(--section-color);
   }
@@ -296,12 +300,8 @@ article {
     border-bottom: var(--border-gray);
   }
 
-  &.intro {
-    border-bottom: var(--border-gray);
-
-    p {
-      margin-top: 0;
-    }
+  &.intro p {
+    margin-top: 0;
   }
 
   h3 {

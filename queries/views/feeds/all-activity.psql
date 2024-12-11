@@ -8,7 +8,7 @@ WITH feed_data AS (
         NULL AS image,
         NULL AS rating,
         p.tags,
-        json_build_object('title', p.title, 'url', CONCAT('https://coryd.dev', p.url), 'description', p.content, 'date', p.date) AS feed
+        json_build_object('title', p.title, 'url', CONCAT('https://coryd.dev', p.url), 'description', p.content, 'date', p.date, 'type', 'article', 'label', 'Post') AS feed
     FROM
         optimized_posts p
     UNION ALL
@@ -20,7 +20,7 @@ WITH feed_data AS (
         NULL AS image,
         NULL AS rating,
         l.tags,
-        json_build_object('title', CONCAT(l.title, ' via ', l.name), 'url', l.link, 'description', l.description, 'date', l.date) AS feed
+        json_build_object('title', CONCAT(l.title, ' via ', l.name), 'url', l.link, 'description', l.description, 'date', l.date, 'type', 'link', 'label', 'Link') AS feed
     FROM
         optimized_links l
     UNION ALL
@@ -41,7 +41,7 @@ WITH feed_data AS (
                     b.review
                 ELSE
                     b.description
-                END, 'image', b.image, 'rating', b.rating, 'date', b.date_finished)
+                END, 'image', b.image, 'rating', b.rating, 'date', b.date_finished, 'type', 'books', 'label', 'Book')
         ELSE
             NULL
         END AS feed
@@ -65,7 +65,7 @@ WITH feed_data AS (
                     m.review
                 ELSE
                     m.description
-                END, 'image', m.backdrop, 'rating', m.rating, 'date', m.last_watched)
+                END, 'image', m.backdrop, 'rating', m.rating, 'date', m.last_watched, 'type', 'movies', 'label', 'Movie')
         ELSE
             NULL
         END AS feed
@@ -84,4 +84,3 @@ FROM (
     ORDER BY
         content_date DESC
     LIMIT 20) AS feed;
-

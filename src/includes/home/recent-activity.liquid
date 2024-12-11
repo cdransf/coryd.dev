@@ -1,23 +1,17 @@
-{%- assign currentYear = "now" | date:"%Y" -%}
-{%- assign artist = music.week.artists | first -%}
-{%- assign track = music.week.tracks | first -%}
-{%- assign show = tv.recentlyWatched | first -%}
-{%- assign movie = movies.recentlyWatched | first -%}
-{%- assign book = books | first -%}
-{%- assign link = links | first -%}
-<article>
-  <h2>
-    {% tablericon "activity" %}
-    Recent activity
-  </h2>
-  <p class="music">Top artist this week: <a href="{{ artist.artist_url }}">{{ artist.artist_name }}</a> with <strong class="highlight-text">{{ artist.plays }} plays</strong></p>
-  <p class="music">Top track this week: {{ track.track_name }} by <a href="{{ track.artist_url }}">{{ track.artist_name }}</a></p>
-  <p class="tv">Last episode watched: <strong class="highlight-text">{{ show.formatted_episode }}</strong> of <a href="{{ show.url }}">{{ show.title }}</a></p>
-  <p class="movies">Last movie watched: <a href="{{ movie.url }}">{{ movie.title }}</a>{%- if movie.rating %} ({{ movie.rating }}){%- endif -%}</p>
-  <p class="books">Last book finished: <a href="{{ book.url }}">{{ book.title }}</a> by {{ book.author }}{%- if book.rating %} ({{ book.rating }}){%- endif -%}</p>
-  <p class="link">Last link shared: <a href="{{ link.link }}">{{ link.title }}</a>{% if link.author %} via <a href="{{ link.author.url }}">{{ link.author.name }}</a>{% endif %}</p>
-  {% render "blocks/banners/rss.liquid",
-    url:"/feeds",
-    text:"Subscribe to my movies, books, links or activity feed(s)"
-  %}
-</article>
+<h2>
+  {% tablericon "activity" %}
+  Recent activity
+</h2>
+<p><a href="/posts" class="article">Posts</a> / <a href="/links" class="link">Links</a> / <a href="/watching" class="movies">Watching</a> / <a href="/books">Books</a></p>
+<ul>
+  {%- for post in posts -%}
+  {%- assign postData = post.feed -%}
+  <li class="{{ postData.type }}">
+    [{{ postData.label }}]:
+    <a href="{{ postData.url }}">{{ postData.title }}</a> /
+    <time datetime="{{ postData.date }}">
+      {{ postData.date | date:"%B %e, %Y" }}
+    </time>
+    </li>
+  {%- endfor -%}
+</ul>

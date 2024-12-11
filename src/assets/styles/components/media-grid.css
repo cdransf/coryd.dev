@@ -2,6 +2,10 @@
   display: grid;
   gap: var(--spacing-sm);
 
+  & + .media-grid {
+    margin-top: var(--spacing-sm);
+  }
+
   &.poster {
     grid-template-columns: var(--grid-poster);
 
@@ -41,6 +45,7 @@
     z-index: 2;
     padding: 0 var(--spacing-sm);
     bottom: var(--spacing-sm);
+    width: 100%;
 
     .header,
     .subheader {

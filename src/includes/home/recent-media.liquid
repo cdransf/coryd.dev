@@ -1,0 +1,21 @@
+<article>
+  {% render "media/grid.liquid",
+    globals:globals,
+    data:media.recentMusic,
+    shape:"square",
+    count:8,
+    loading:"eager"
+  %}
+  {% render "media/grid.liquid",
+    globals:globals,
+    data:media.recentWatchedRead,
+    shape:"vertical",
+    count:6
+    loading:"eager"
+  %}
+  {% render "blocks/banners/rss.liquid",
+    url:"/feeds",
+    text:"Subscribe to my movies, books, links or activity feed(s)"
+  %}
+</article>
+<hr />
