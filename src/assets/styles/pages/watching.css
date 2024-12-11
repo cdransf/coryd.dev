@@ -17,7 +17,7 @@
     }
 
     .subheader {
-      font-size: var(--font-size-sm);
+      font-size: var(--font-size-xs);
     }
 
     .header,
