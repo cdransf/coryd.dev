@@ -8,6 +8,7 @@ permalink: "/posts/{% if pagination.pageNumber > 0 %}{{ pagination.pageNumber }}
 {% if pagination.pageNumber == 0 %}
 <h2 class="page-title">Posts</h2>
 <p>These are all of my blog posts on this site (I like some more than others).</p>
+<p>I tend to write about whatever strikes me, with a focus on development, technology, automation or issues I run into with these things. This is all typically light on editing with and heavy on spur of the moment thoughts.</p>
 {% render "blocks/banners/rss.liquid",
   url: "/feeds/posts.xml",
   text: "Subscribe to my posts feed or follow along on this page"
