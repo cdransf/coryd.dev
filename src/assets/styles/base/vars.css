@@ -151,7 +151,6 @@
   --inline-margin-bottom: -5px;
 
   /* shadows */
-  --box-shadow-media: inset 0 -85px 60px -40px var(--color-darkest);
   --box-shadow-text-toggle: inset 0 -120px 60px -60px var(--background-color);
 
   /* modals */

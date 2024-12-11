@@ -40,6 +40,10 @@ p {
   background-color: var(--accent-color);
   padding: var(--spacing-xs);
   border-radius: var(--border-radius-slight);
+
+  & > * {
+    color: var(--text-color-inverted);
+  }
 }
 
 details > summary {
@@ -300,8 +304,12 @@ article {
     border-bottom: var(--border-gray);
   }
 
-  &.intro p {
-    margin-top: 0;
+  &.intro {
+    border-bottom: var(--border-gray);
+
+    p {
+      margin-top: 0;
+    }
   }
 
   h3 {

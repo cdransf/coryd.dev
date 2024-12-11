@@ -14,12 +14,20 @@ SELECT
   m.slug AS url,
   CONCAT('/', df.filename_disk) AS image,
   CONCAT('/', df2.filename_disk) AS backdrop,
-  json_build_object('title', m.title, 'url', m.slug, 'image', CONCAT('/', df.filename_disk), 'backdrop', CONCAT('/', df2.filename_disk), 'alt', CONCAT('Poster from ', m.title, ' (', m.year, ')'), 'subtext', CASE WHEN m.star_rating IS NOT NULL THEN
-      CONCAT(m.star_rating, ' (', m.year, ')')
-    ELSE
-      CONCAT('(', m.year, ')')
-    END) AS grid,
-(
+  json_build_object(
+      'title', NULL,
+      'url', m.slug,
+      'image', CONCAT('/', df.filename_disk),
+      'backdrop', CONCAT('/', df2.filename_disk),
+      'alt', CONCAT('Poster from ', m.title),
+      'subtext', CASE
+        WHEN m.last_watched >= NOW() - INTERVAL '90 days' THEN
+          m.star_rating::text
+        ELSE
+          m.year::text
+      END
+  ) AS grid,
+  (
     SELECT
       array_agg(t.name)
     FROM
@@ -107,4 +115,3 @@ ORDER BY
   m.last_watched DESC,
   m.favorite DESC,
   m.title ASC;
-

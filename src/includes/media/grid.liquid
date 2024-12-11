@@ -4,20 +4,21 @@
     {%- assign alt = item.grid.alt | replaceQuotes -%}
     {%- assign imageUrl = item.grid.image -%}
     <a href="{{ item.grid.url }}" title="{{ alt }}">
-      <div class="item media-overlay">
-        <div class="meta-text">
+      <div class="media-grid-item">
+        {%- if item.grid.title or item.grid.subtext -%}
+        <div class="meta-text highlight-text">
+          {% if item.grid.title %}
           <div class="header">{{ item.grid.title }}</div>
+          {% endif %}
+          {% if item.grid.subtext %}
           <div class="subheader">{{ item.grid.subtext }}</div>
+          {% endif %}
         </div>
+        {%- endif -%}
         {%- assign imageClass = "" -%}
         {%- assign width = 0 -%}
         {%- assign height = 0 -%}
         {%- case shape -%}
-          {%- when "poster" -%}
-            {%- assign imageUrl = item.grid.backdrop -%}
-            {%- assign imageClass = "banner" -%}
-            {%- assign width = 256 -%}
-            {%- assign height = 170 -%}
           {%- when "square" -%}
             {%- assign imageClass = "square" -%}
             {%- assign width = 200 -%}

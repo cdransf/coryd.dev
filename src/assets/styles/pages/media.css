@@ -18,25 +18,6 @@
   }
 }
 
-a:is(:hover, :active, :focus) .media-overlay::after {
-  border: var(--border-default-hover);
-  transition: border-color var(--transition-duration-default)
-    var(--transition-ease-in-out);
-}
-
-.media-overlay::after {
-  position: absolute;
-  z-index: 1;
-  content: "";
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: var(--border-default);
-  box-shadow: var(--box-shadow-media);
-  border-radius: var(--border-radius-slight);
-}
-
 .associated-media {
   margin: var(--margin-vertical-base-horizontal-zero);
 }

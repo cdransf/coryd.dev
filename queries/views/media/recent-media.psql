@@ -27,7 +27,7 @@ ordered_albums AS (
             'image', wa.album_art,
             'url', wa.artist_url,
             'alt', CONCAT(wa.album_name, ' by ', wa.artist_name, ' (', wa.plays, ' plays)'),
-            'subtext', CONCAT(wa.artist_name, ' (', wa.plays, ' plays)')
+            'subtext', wa.artist_name
         ) AS grid
     FROM week_albums wa
     ORDER BY wa.plays DESC, wa.album_name ASC
@@ -93,15 +93,15 @@ recent_watched_read AS (
                 'movie' AS type,
                 1 AS rank,
                 json_build_object(
-                    'title', om.title,
+                    'title', null,
                     'url', om.url,
                     'image', om.image,
                     'backdrop', om.backdrop,
                     'alt', CONCAT('Poster from ', om.title, ' (', om.year, ')'),
                     'subtext', CASE WHEN om.rating IS NOT NULL THEN
-                        CONCAT(om.rating, ' (', om.year, ')')
+                      om.rating::text
                     ELSE
-                        CONCAT('(', om.year, ')')
+                      om.year::text
                     END
                 ) AS grid
             FROM optimized_movies om
@@ -118,7 +118,7 @@ recent_watched_read AS (
                 'show' AS type,
                 2 AS rank,
                 json_build_object(
-                    'title', os.title,
+                    'title', null,
                     'image', os.image,
                     'url', os.url,
                     'alt', CONCAT('Poster from ', os.title),
@@ -144,7 +144,7 @@ recent_watched_read AS (
                 'book' AS type,
                 3 AS rank,
                 json_build_object(
-                    'title', CONCAT(ob.title, ' by ', ob.author),
+                    'title', null,
                     'image', ob.image,
                     'url', ob.url,
                     'alt', CONCAT('Book cover from ', ob.title, ' by ', ob.author),
@@ -168,15 +168,15 @@ recent_watched_read AS (
                 'movie' AS type,
                 4 AS rank,
                 json_build_object(
-                    'title', om.title,
+                    'title', null,
                     'url', om.url,
                     'image', om.image,
                     'backdrop', om.backdrop,
                     'alt', CONCAT('Poster from ', om.title, ' (', om.year, ')'),
                     'subtext', CASE WHEN om.rating IS NOT NULL THEN
-                        CONCAT(om.rating, ' (', om.year, ')')
+                      om.rating::text
                     ELSE
-                        CONCAT('(', om.year, ')')
+                      om.year::text
                     END
                 ) AS grid
             FROM optimized_movies om
@@ -193,7 +193,7 @@ recent_watched_read AS (
                 'show' AS type,
                 5 AS rank,
                 json_build_object(
-                    'title', os.title,
+                    'title', null,
                     'image', os.image,
                     'url', os.url,
                     'alt', CONCAT('Poster from ', os.title),
@@ -219,7 +219,7 @@ recent_watched_read AS (
                 'book' AS type,
                 6 AS rank,
                 json_build_object(
-                    'title', CONCAT(ob.title, ' by ', ob.author),
+                    'title', null,
                     'image', ob.image,
                     'url', ob.url,
                     'alt', CONCAT('Book cover from ', ob.title, ' by ', ob.author),

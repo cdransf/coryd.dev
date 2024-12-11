@@ -11,21 +11,45 @@ SELECT
   s.slug AS url,
   CONCAT('/', df_art.filename_disk) AS image,
   CONCAT('/', df_backdrop.filename_disk) AS backdrop,
-  json_build_object('title', s.title, 'image', CONCAT('/', df_art.filename_disk), 'backdrop', CONCAT('/', df_backdrop.filename_disk), 'url', s.slug, 'alt', CONCAT('Poster from ', s.title, ' (', s.year, ')'), 'subtext', COALESCE((
-      SELECT
-        CASE WHEN e1.last_watched_at >= NOW() - INTERVAL '90 days' THEN
-          CONCAT('S', e1.season_number, 'E', e1.episode_number)
+  json_build_object(
+    'title', NULL,
+    'image', CONCAT('/', df_art.filename_disk),
+    'backdrop', CONCAT('/', df_backdrop.filename_disk),
+    'url', s.slug,
+    'alt', CONCAT('Poster from ', s.title),
+    'subtext', COALESCE(
+      CASE
+        WHEN EXISTS (
+          SELECT 1
+          FROM episodes e1
+          WHERE e1.show = s.id
+            AND e1.last_watched_at >= NOW() - INTERVAL '90 days'
+        ) THEN
+          (SELECT CONCAT('S', e1.season_number, 'E', e1.episode_number)
+            FROM episodes e1
+            WHERE e1.show = s.id
+            ORDER BY e1.last_watched_at DESC, e1.season_number DESC, e1.episode_number DESC
+            LIMIT 1)
         ELSE
-          CONCAT('(', s.year::text, ')')
-        END FROM episodes e1
-        WHERE
-          e1.show = s.id ORDER BY e1.last_watched_at DESC, e1.season_number DESC, e1.episode_number DESC LIMIT 1), CONCAT('(', s.year::text, ')'))) AS grid,
-  json_build_object('title', s.title, 'year', s.year, 'url', s.slug, 'image', CONCAT('/', df_art.filename_disk), 'backdrop', CONCAT('/', df_backdrop.filename_disk), 'formatted_episode', COALESCE((
-      SELECT
-        CONCAT('S', e2.season_number, 'E', e2.episode_number)
+          s.year::text
+      END, s.year::text
+    )
+  ) AS grid,
+  json_build_object(
+    'title', s.title,
+    'year', s.year,
+    'url', s.slug,
+    'image', CONCAT('/', df_art.filename_disk),
+    'backdrop', CONCAT('/', df_backdrop.filename_disk),
+    'formatted_episode', COALESCE((
+      SELECT CONCAT('S', e2.season_number, 'E', e2.episode_number)
       FROM episodes e2
-      WHERE
-        e2.show = s.id ORDER BY e2.season_number DESC, e2.episode_number DESC LIMIT 1)), 'last_watched_at', MAX(e.last_watched_at)) AS episode,
+      WHERE e2.show = s.id
+      ORDER BY e2.season_number DESC, e2.episode_number DESC
+      LIMIT 1
+    )),
+    'last_watched_at', MAX(e.last_watched_at)
+  ) AS episode,
 (
     SELECT
       json_agg(json_build_object('title', m.title, 'year', m.year, 'url', m.slug)
@@ -34,7 +58,8 @@ SELECT
       shows_movies sm
     LEFT JOIN movies m ON sm.movies_id = m.id
   WHERE
-    sm.shows_id = s.id) AS movies,
+    sm.shows_id = s.id
+) AS movies,
 (
     SELECT
       json_agg(json_build_object('title', b.title, 'author', b.author, 'url', b.slug)
@@ -43,7 +68,8 @@ SELECT
       shows_books sb
     LEFT JOIN books b ON sb.books_id = b.id
   WHERE
-    sb.shows_id = s.id) AS books,
+    sb.shows_id = s.id
+) AS books,
 (
     SELECT
       json_agg(json_build_object('title', p.title, 'date', p.date, 'url', p.slug)
@@ -52,7 +78,8 @@ SELECT
       posts_shows ps
     LEFT JOIN posts p ON ps.posts_id = p.id
   WHERE
-    ps.shows_id = s.id) AS posts,
+    ps.shows_id = s.id
+) AS posts,
 (
     SELECT
       array_agg(t.name)
@@ -60,7 +87,8 @@ SELECT
       shows_tags st
     LEFT JOIN tags t ON st.tags_id = t.id
   WHERE
-    st.shows_id = s.id) AS tags,
+    st.shows_id = s.id
+) AS tags,
 (
     SELECT
       json_agg(json_build_object('title', rs.title, 'year', rs.year, 'url', rs.slug)
@@ -69,7 +97,8 @@ SELECT
       related_shows sr
     LEFT JOIN shows rs ON sr.related_shows_id = rs.id
   WHERE
-    sr.shows_id = s.id) AS related_shows,
+    sr.shows_id = s.id
+) AS related_shows,
 (
     SELECT
       json_agg(json_build_object('name', a.name_string, 'url', a.slug, 'country', a.country, 'total_plays', a.total_plays)
@@ -78,7 +107,8 @@ SELECT
       shows_artists sa
     LEFT JOIN artists a ON sa.artists_id = a.id
   WHERE
-    sa.shows_id = s.id) AS artists,
+    sa.shows_id = s.id
+) AS artists,
   MAX(e.last_watched_at) AS last_watched_at
 FROM
   shows s
@@ -91,4 +121,3 @@ GROUP BY
   df_backdrop.filename_disk
 ORDER BY
   MAX(e.last_watched_at) DESC;
-

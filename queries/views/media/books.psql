@@ -28,8 +28,8 @@ SELECT
   FROM
     books_artists ba
   LEFT JOIN artists a ON ba.artists_id = a.id
-WHERE
-  ba.books_id = b.id) AS artists,
+  WHERE
+    ba.books_id = b.id) AS artists,
 (
   SELECT
     json_agg(json_build_object('title', m.title, 'year', m.year, 'url', m.slug)
@@ -37,8 +37,8 @@ WHERE
   FROM
     movies_books mb
   LEFT JOIN movies m ON mb.movies_id = m.id
-WHERE
-  mb.books_id = b.id) AS movies,
+  WHERE
+    mb.books_id = b.id) AS movies,
 (
   SELECT
     json_agg(json_build_object('name', g.name, 'url', g.slug)
@@ -46,8 +46,8 @@ WHERE
   FROM
     genres_books gb
   LEFT JOIN genres g ON gb.genres_id = g.id
-WHERE
-  gb.books_id = b.id) AS genres,
+  WHERE
+    gb.books_id = b.id) AS genres,
 (
   SELECT
     json_agg(json_build_object('title', s.title, 'year', s.year, 'url', s.slug)
@@ -55,8 +55,8 @@ WHERE
   FROM
     shows_books sb
   LEFT JOIN shows s ON sb.shows_id = s.id
-WHERE
-  sb.books_id = b.id) AS shows,
+  WHERE
+    sb.books_id = b.id) AS shows,
 (
   SELECT
     json_agg(json_build_object('title', p.title, 'date', p.date, 'url', p.slug)
@@ -64,8 +64,8 @@ WHERE
   FROM
     posts_books pb
   LEFT JOIN posts p ON pb.posts_id = p.id
-WHERE
-  pb.books_id = b.id) AS posts,
+  WHERE
+    pb.books_id = b.id) AS posts,
 (
   SELECT
     json_agg(json_build_object('title', rb.title, 'author', rb.author, 'url', rb.slug)
@@ -73,26 +73,30 @@ WHERE
   FROM
     related_books rbk
   LEFT JOIN books rb ON rbk.related_books_id = rb.id
-WHERE
-  rbk.books_id = b.id) AS related_books,
-json_build_object('title', CONCAT(b.title, ' by ', b.author), 'image', CONCAT('/', df.filename_disk), 'url', b.slug, 'alt', CONCAT('Book cover from ', b.title, ' by ', b.author), 'subtext', CASE WHEN b.star_rating IS NOT NULL THEN
-    b.star_rating
+  WHERE
+    rbk.books_id = b.id) AS related_books,
+json_build_object(
+    'title', NULL,
+    'image', CONCAT('/', df.filename_disk),
+    'url', b.slug,
+    'alt', CONCAT('Book cover from ', b.title, ' by ', b.author),
+    'subtext', CASE
+      WHEN b.star_rating IS NOT NULL THEN b.star_rating::text
+      ELSE NULL
+    END
+) AS grid,
+CASE
+  WHEN LOWER(b.read_status) = 'finished' AND b.star_rating IS NOT NULL THEN
+    json_build_object(
+      'title', CONCAT(b.title, ' by ', b.author, ' (', b.star_rating, ')'),
+      'url', CONCAT('https://coryd.dev', b.slug),
+      'date', b.date_finished,
+      'description', COALESCE(b.review, b.description),
+      'image', CONCAT('/', df.filename_disk),
+      'rating', b.star_rating
+    )
   ELSE
     NULL
-  END) AS grid,
-CASE WHEN LOWER(b.read_status) = 'finished'
-  AND b.star_rating IS NOT NULL THEN
-  json_build_object('title', CONCAT(b.title, 'by ', b.author, CASE WHEN b.star_rating IS NOT NULL THEN
-        CONCAT(' (', b.star_rating, ')')
-      ELSE
-        ''
-      END), 'url', CONCAT('https://coryd.dev', b.slug), 'date', b.date_finished, 'description', CASE WHEN b.review IS NOT NULL THEN
-      b.review
-    ELSE
-      b.description
-    END, 'image', CONCAT('/', df.filename_disk), 'rating', b.star_rating)
-ELSE
-  NULL
 END AS feed
 FROM
   books b
@@ -100,4 +104,3 @@ FROM
 GROUP BY
   b.id,
   df.filename_disk;
-
